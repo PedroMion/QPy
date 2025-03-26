@@ -1,48 +1,53 @@
+from metrics import EnvironmentMetrics
+
+
 class Server:
-    def __init__(self, avgServiceTime, queueDiscipline):
-        self.avgServiceTime = avgServiceTime
-        self.queueDiscipline = queueDiscipline
+    def __init__(self, average_service_time, queue_discipline):
+        self.average_service_time = average_service_time
+        self.queue_discipline = queue_discipline
         self.destinies = {"end": 1.0}
         self.arrivals = []
     
-    def addArrival(self, avgArrivalTime):
-        self.arrivals.append(avgArrivalTime)
+    def add_arrival(self, average_arrival_time):
+        self.arrivals.append(average_arrival_time)
     
-    def addDestiny(self, destinyServer, probability):
-        endProbability = self.destinies["end"]
+    def add_destiny(self, destiny_server, probability):
+        end_probability = self.destinies["end"]
 
-        if probability > endProbability:
+        if probability > end_probability:
             raise ValueError("Too many probabilities, values exceeding 1")
         
         self.destinies["end"] -= probability
-        self.destinies[destinyServer] = probability
+        self.destinies[destiny_server] = probability
 
 class Environment:
-    def __init__(self, numOfTerminals=None, avgThinkTime=None):
+    def __init__(self, num_of_terminals=None, average_think_time=None):
         self.servers = []
+        self.job_arrival_times = []
+        self.metrics = EnvironmentMetrics()
         
-        if numOfTerminals is None or avgThinkTime is None:
+        if num_of_terminals is None or average_think_time is None:
             self.closed = False
         else:
             self.closed = True
-            self.numOfTerminals = numOfTerminals
-            self.avgThinkTime = avgThinkTime
+            self.num_of_terminals = num_of_terminals
+            self.average_think_time = average_think_time
     
-    def addServer(self, avgServiceTime, queueDiscipline = 'FCFS'):
+    def addServer(self, average_service_time, queue_discipline = 'FCFS'):
         try:
-            avgServiceTime = float(avgServiceTime)
+            average_service_time = float(average_service_time)
         except ValueError:
             raise ValueError("Average service time must be double")
         
-        if queueDiscipline != 'SRT' and queueDiscipline != 'FCFS':
-            queueDiscipline = 'FCFS'
+        if queue_discipline != 'SRT' and queue_discipline != 'FCFS':
+            queue_discipline = 'FCFS'
         
-        self.servers.append(Server(avgServiceTime, queueDiscipline))
+        self.servers.append(Server(average_service_time, queue_discipline))
 
         return len(self.servers) - 1
 
-    def addEntryPoint(self, serverId, avgArrivalTime):
-        if serverId >= 0 and serverId < len(self.servers):
-            self.servers[serverId].addArrival(avgArrivalTime)
+    def addEntryPoint(self, server_id, average_arrival_time):
+        if server_id >= 0 and server_id < len(self.servers):
+            self.servers[server_id].add_arrival(average_arrival_time)
             return
-        raise ValueError("The provided serverId is not valid.")
+        raise ValueError("The provided server id is not valid.")
