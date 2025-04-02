@@ -1,9 +1,14 @@
 from metrics import EnvironmentMetrics
+from utils import generate_exponential_arrivals
+
+
+import heapq
 
 
 class Server:
     def __init__(self, average_service_time, queue_discipline):
         self.average_service_time = average_service_time
+        self.queue = []
         self.queue_discipline = queue_discipline
         self.destinies = {"end": 1.0}
         self.arrivals = []
@@ -19,6 +24,17 @@ class Server:
         
         self.destinies["end"] -= probability
         self.destinies[destiny_server] = probability
+    
+    def generate_jobs(self, time_limit):
+        queue = []
+
+        for average_arrival_time in self.arrivals:
+            new_jobs = generate_exponential_arrivals(time_limit, average_arrival_time)
+            queue.append(new_jobs)
+        
+        self.queue = queue[::]
+        heapq.heapify(self.queue)
+
 
 class Environment:
     def __init__(self, num_of_terminals=None, average_think_time=None):
@@ -51,3 +67,6 @@ class Environment:
             self.servers[server_id].add_arrival(average_arrival_time)
             return
         raise ValueError("The provided server id is not valid.")
+
+    #def simulate(time_in_seconds):
+
