@@ -1,24 +1,6 @@
 from metrics import EnvironmentMetrics
+from server import Server
 
-
-class Server:
-    def __init__(self, average_service_time, queue_discipline):
-        self.average_service_time = average_service_time
-        self.queue_discipline = queue_discipline
-        self.destinies = {"end": 1.0}
-        self.arrivals = []
-    
-    def add_arrival(self, average_arrival_time):
-        self.arrivals.append(average_arrival_time)
-    
-    def add_destiny(self, destiny_server, probability):
-        end_probability = self.destinies["end"]
-
-        if probability > end_probability:
-            raise ValueError("Too many probabilities, values exceeding 1")
-        
-        self.destinies["end"] -= probability
-        self.destinies[destiny_server] = probability
 
 class Environment:
     def __init__(self, num_of_terminals=None, average_think_time=None):
