@@ -1,5 +1,6 @@
 from metrics import EnvironmentMetrics
 from server import Server
+from utils import generate_exponential_arrivals
 
 
 class Environment:
@@ -33,3 +34,6 @@ class Environment:
             self.servers[server_id].add_arrival(average_arrival_time)
             return
         raise ValueError("The provided server id is not valid.")
+
+    #def simulate(time_in_seconds):
+

@@ -10,4 +10,4 @@ class EnvironmentMetrics:
         try:
             self.time_in_system[job_id] = time - self.arrival_times[job_id]
         except:
-            raise ValueError("Trying to remove server before arrival.")
+            raise ValueError("Trying to remove job before arrival.")
