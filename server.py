@@ -5,11 +5,18 @@ class Server:
     def __init__(self, average_service_time, queue_discipline):
         self.average_service_time = average_service_time
         self.queue_discipline = queue_discipline
+        self.queue = []
         self.destinies = {"end": 1.0}
         self.job_count = 0
     
     def is_busy(self):
         return self.job_count > 0
+    
+    def service_time(self):
+        return self.average_service_time #constant, later implementation
+    
+    def get_first_in_line(self):
+        return self.queue[0]
     
     def add_destiny(self, destiny_server, probability):
         end_probability = self.destinies["end"]
@@ -32,6 +39,10 @@ class Server:
 
     def add_to_queue(self, job):
         self.job_count += 1
+        self.queue.append(job)
+
+        if self.job_count == 1:
+            return self.service_time()
 
         return
     
@@ -40,4 +51,6 @@ class Server:
         
         if self.job_count < 0:
             raise ValueError("No jobs currently in execution.")
+        self.queue.remove(0)
+
         return self.route_job()

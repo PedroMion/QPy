@@ -1,3 +1,6 @@
+import heapq
+
+
 from metrics import EnvironmentMetrics
 from server import Server
 from utils import generate_exponential_arrivals
@@ -7,8 +10,6 @@ class Environment:
     def __init__(self, num_of_terminals=None, average_think_time=None):
         self.servers = []
         self.arrivals = {}
-        self.event_queue = []
-        self.metrics = EnvironmentMetrics()
         
         if num_of_terminals is None or average_think_time is None:
             self.closed = False
@@ -40,9 +41,39 @@ class Environment:
         raise ValueError("The provided server id is not valid.")
 
     def generate_jobs(self, time_limit): 
-         for server in self.arrivals.keys():
+        event_queue = []
+
+        for server in self.arrivals.keys():
             if self.arrivals[server] > 0:
-                generate_exponential_arrivals(self.event_queue, time_limit, server, self.arrivals[server])
+                generate_exponential_arrivals(event_queue, time_limit, server, self.arrivals[server])
+        
+        return event_queue
 
     #def simulate(time_in_seconds):
 
+
+class Execution:
+    def __init__(self, time, warmup, queue, servers):
+        self.time = time
+        self.warmup = warmup
+        self.event_queue = queue
+        self.servers = servers
+        self.metrics = EnvironmentMetrics()
+    
+    def execute(self):
+        while(len(self.event_queue) > 0):
+            next_event = heapq.heappop(self.event_queue)
+            current_time = next_event[0]
+            job = next_event[2]
+            server_id = next_event[3]
+
+            if next_event[1] == 'arrival':
+                job.reroute(current_time)
+                service_time = self.servers[server_id].add_to_queue(job)
+
+                if service_time:
+                    heapq.heappush(self.event_queue, (current_time + service_time, 'departure', job, server_id))
+                    job.serve(current_time)
+            else:
+                #case where event is departure
+                pass
