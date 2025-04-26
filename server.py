@@ -51,7 +51,7 @@ class Server:
         
         if self.job_count < 0:
             raise ValueError("No jobs currently in execution.")
-        self.queue.remove(0)
+        self.queue.pop(0)
 
         if self.job_count > 0:
             return self.service_time()

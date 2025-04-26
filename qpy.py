@@ -36,7 +36,9 @@ class Environment:
 
     def add_entry_point(self, server_id, average_arrival_time):
         if server_id >= 0 and server_id < len(self.servers):
-            self.arrivals += average_arrival_time
+            self.arrivals[server_id] += average_arrival_time
+
+            return
 
         raise ValueError("The provided server id is not valid.")
 
@@ -49,7 +51,12 @@ class Environment:
         
         return event_queue
 
-    #def simulate(time_in_seconds):
+    def simulate(self, time_in_seconds):
+        queue = self.generate_jobs(time_in_seconds)
+
+        new_execution = Execution(time_in_seconds, 0, queue, self.servers)
+
+        return new_execution.execute()
 
 
 class Execution:
@@ -83,11 +90,11 @@ class Execution:
                 new_job_service_time = server.finish_current_job()
 
                 if new_job_service_time:
-                    self.serve_new_job(server_id, job, current_time, service_time)
+                    self.serve_new_job(server_id, job, current_time, new_job_service_time)
                 
                 route = server.route_job()
 
-                if route:
+                if route != 'end':
                     job.reroute(current_time)
                     service_time = self.servers[server_id].add_to_queue(job)
 
@@ -95,3 +102,4 @@ class Execution:
                         self.serve_new_job(server_id, job, current_time, service_time)
                 else:
                     self.metrics.compute_job(job, current_time)
+        return self.metrics
