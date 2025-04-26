@@ -60,6 +60,10 @@ class Execution:
         self.servers = servers
         self.metrics = EnvironmentMetrics()
     
+    def serve_new_job(self, server, job, current_time, service_time):
+        heapq.heappush(self.event_queue, (current_time + service_time, 'departure', job, server))
+        job.serve(current_time)
+
     def execute(self):
         while(len(self.event_queue) > 0):
             next_event = heapq.heappop(self.event_queue)
@@ -72,8 +76,22 @@ class Execution:
                 service_time = self.servers[server_id].add_to_queue(job)
 
                 if service_time:
-                    heapq.heappush(self.event_queue, (current_time + service_time, 'departure', job, server_id))
-                    job.serve(current_time)
+                    self.serve_new_job(server_id, job, current_time, service_time)
             else:
                 #case where event is departure
-                pass
+                server = self.servers[server_id]
+                new_job_service_time = server.finish_current_job()
+
+                if new_job_service_time:
+                    self.serve_new_job(server_id, job, current_time, service_time)
+                
+                route = server.route_job()
+
+                if route:
+                    job.reroute(current_time)
+                    service_time = self.servers[server_id].add_to_queue(job)
+
+                    if service_time:
+                        self.serve_new_job(server_id, job, current_time, service_time)
+                else:
+                    self.metrics.compute_job(job, current_time)

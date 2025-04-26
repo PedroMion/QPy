@@ -9,8 +9,3 @@ class Job:
     
     def reroute(self, arrival_time):
         self.arrival_time_in_current_server = arrival_time
-    
-    def finish(self, completion_time):
-        self.time_in_system = completion_time - self.arrival_time
-
-        return self.time_in_system

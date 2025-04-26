@@ -53,4 +53,5 @@ class Server:
             raise ValueError("No jobs currently in execution.")
         self.queue.remove(0)
 
-        return self.route_job()
+        if self.job_count > 0:
+            return self.service_time()
