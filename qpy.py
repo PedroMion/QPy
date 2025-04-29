@@ -44,17 +44,19 @@ class Environment:
 
     def generate_jobs(self, time_limit): 
         event_queue = []
+        event_count = 0
 
         for server in self.arrivals.keys():
             if self.arrivals[server] > 0:
-                generate_exponential_arrivals(event_queue, time_limit, server, self.arrivals[server])
-        
+                generate_exponential_arrivals(event_queue, time_limit, server, self.arrivals[server], event_count)
+
+                event_count = len(event_queue)
         return event_queue
 
-    def simulate(self, time_in_seconds):
-        queue = self.generate_jobs(time_in_seconds)
+    def simulate(self, time_in_seconds, warmup_time):
+        queue = self.generate_jobs(time_in_seconds + warmup_time)
 
-        new_execution = Execution(time_in_seconds, 0, queue, self.servers)
+        new_execution = Execution(time_in_seconds, warmup_time, queue, self.servers)
 
         return new_execution.execute()
 
@@ -64,21 +66,23 @@ class Execution:
         self.time = time
         self.warmup = warmup
         self.event_queue = queue
+        self.event_count = len(queue)
         self.servers = servers
         self.metrics = EnvironmentMetrics()
     
     def serve_new_job(self, server, job, current_time, service_time):
-        heapq.heappush(self.event_queue, (current_time + service_time, 'departure', job, server))
+        heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, 'departure', job, server))
         job.serve(current_time)
+        self.event_count += 1
 
     def execute(self):
         while(len(self.event_queue) > 0):
             next_event = heapq.heappop(self.event_queue)
             current_time = next_event[0]
-            job = next_event[2]
-            server_id = next_event[3]
+            job = next_event[3]
+            server_id = next_event[4]
 
-            if next_event[1] == 'arrival':
+            if next_event[2] == 'arrival':
                 job.reroute(current_time)
                 service_time = self.servers[server_id].add_to_queue(job)
 
@@ -101,5 +105,6 @@ class Execution:
                     if service_time:
                         self.serve_new_job(server_id, job, current_time, service_time)
                 else:
-                    self.metrics.compute_job(job, current_time)
+                    if current_time > self.warmup:
+                        self.metrics.compute_job(job, current_time)
         return self.metrics

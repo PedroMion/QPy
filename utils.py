@@ -8,7 +8,7 @@ from job import Job
 def exponential(lambda_value):
   return -np.log(1-random.random())/lambda_value
 
-def generate_exponential_arrivals(queue, delta, server, arrival_rate):
+def generate_exponential_arrivals(queue, delta, server, arrival_rate, event_count):
     time = 0
 
     while time < delta:
@@ -17,6 +17,7 @@ def generate_exponential_arrivals(queue, delta, server, arrival_rate):
         if new_arrival_time < delta:
             new_job = Job(new_arrival_time)
 
-            heapq.heappush(queue, (new_arrival_time, 'arrival', new_job, server))
+            heapq.heappush(queue, (new_arrival_time, event_count, 'arrival', new_job, server))
 
         time = new_arrival_time
+        event_count += 1
