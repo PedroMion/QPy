@@ -81,29 +81,29 @@ class Execution:
             current_time = next_event[0]
             job = next_event[3]
             server_id = next_event[4]
+            server = self.servers[server_id]
 
             if next_event[2] == 'arrival':
                 job.reroute(current_time)
-                service_time = self.servers[server_id].add_to_queue(job)
+                service_time = server.add_to_queue(job)
 
                 if service_time:
                     self.serve_new_job(server_id, job, current_time, service_time)
             else:
                 #case where event is departure
-                server = self.servers[server_id]
                 new_job_service_time = server.finish_current_job()
 
                 if new_job_service_time:
-                    self.serve_new_job(server_id, job, current_time, new_job_service_time)
+                    self.serve_new_job(server_id, server.get_first_in_line(), current_time, new_job_service_time)
                 
                 route = server.route_job()
 
                 if route != 'end':
                     job.reroute(current_time)
-                    service_time = self.servers[server_id].add_to_queue(job)
+                    service_time = self.servers[route].add_to_queue(job)
 
                     if service_time:
-                        self.serve_new_job(server_id, job, current_time, service_time)
+                        self.serve_new_job(route, job, current_time, service_time)
                 else:
                     if current_time > self.warmup:
                         self.metrics.compute_job(job, current_time)
