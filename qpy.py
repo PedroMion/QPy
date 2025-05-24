@@ -89,6 +89,8 @@ class Execution:
 
                 if service_time:
                     self.serve_new_job(server_id, job, current_time, service_time)
+                if current_time > self.warmup:
+                    self.metrics.compute_arrival(current_time)
             else:
                 #case where event is departure
                 new_job_service_time = server.finish_current_job()
@@ -105,6 +107,6 @@ class Execution:
                     if service_time:
                         self.serve_new_job(route, job, current_time, service_time)
                 else:
-                    if current_time > self.warmup:
-                        self.metrics.compute_job(job, current_time)
+                    if job.arrival_time > self.warmup:
+                        self.metrics.compute_departure(job, current_time)
         return self.metrics
