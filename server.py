@@ -1,3 +1,6 @@
+from utils import exponential
+
+
 import random
 
 
@@ -13,7 +16,7 @@ class Server:
         return self.job_count > 0
     
     def service_time(self):
-        return self.average_service_time #constant, later implementation
+        return exponential(self.average_service_time)
     
     def get_first_in_line(self):
         return self.queue[0]

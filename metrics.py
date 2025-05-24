@@ -32,10 +32,10 @@ class EnvironmentMetrics:
         return self.total_jobs
 
     def mean_time_in_system(self):
-        return sum(self.time_in_system) / self.total_jobs
+        return (sum(self.time_in_system) / self.total_jobs) if self.total_jobs > 0 else 0
     
     def mean_queue_time(self):
         return sum(self.queue_times) / self.total_jobs
 
     def mean_num_jobs_in_system(self):
-        return round(self.weighted_sum_num_jobs / self.current_time, 4)
+        return (round(self.weighted_sum_num_jobs / self.current_time, 4)) if self.current_time > 0 else 0
