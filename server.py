@@ -1,3 +1,4 @@
+from metrics import ServerMetrics
 from utils import exponential
 
 
@@ -6,6 +7,7 @@ import random
 
 class Server:
     def __init__(self, average_service_time, queue_discipline):
+        self.metrics = ServerMetrics()
         self.average_service_time = average_service_time
         self.queue_discipline = queue_discipline
         self.queue = []
