@@ -7,21 +7,11 @@ import random
 
 class Server:
     def __init__(self, average_service_time, queue_discipline):
-        self.metrics = ServerMetrics()
         self.average_service_time = average_service_time
         self.queue_discipline = queue_discipline
         self.queue = []
         self.destinies = {"end": 1.0}
         self.job_count = 0
-    
-    def is_busy(self):
-        return self.job_count > 0
-    
-    def service_time(self):
-        return exponential(self.average_service_time)
-    
-    def get_first_in_line(self):
-        return self.queue[0]
     
     def add_destiny(self, destiny_server, probability):
         end_probability = self.destinies["end"]
@@ -31,6 +21,12 @@ class Server:
         
         self.destinies["end"] -= probability
         self.destinies[destiny_server] = probability
+
+    def service_time(self):
+        return exponential(self.average_service_time)
+    
+    def get_first_in_line(self):
+        return self.queue[0] 
     
     def route_job(self):
         probability = random.random()
