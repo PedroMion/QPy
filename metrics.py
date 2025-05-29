@@ -20,10 +20,10 @@ class GeneralMetrics:
             self.current_number_of_jobs -= 1
 
     def compute_arrival(self, time):
-        self.count_num_of_jobs(time, 'arrival')
+        self.count_number_of_jobs(time, 'arrival')
 
     def compute_departure(self, job, time):
-        self.count_num_of_jobs(time, 'departure')
+        self.count_number_of_jobs(time, 'departure')
 
         self.total_number_of_processed_jobs += 1
         self.cumulative_time_in_system += (time - job.arrival_time)
@@ -43,11 +43,11 @@ class GeneralMetrics:
 
 class EnvironmentMetrics(GeneralMetrics):
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
 class ServerMetrics(GeneralMetrics):
     def __init__(self, server_id):
-        super.__init__()
+        super().__init__()
         self.server_id = server_id
         self.cumulative_server_busy_time = 0
         self.cumulative_visits_per_job = 0

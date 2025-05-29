@@ -16,6 +16,10 @@ class INetwork(ABC):
     def generate_jobs(self, time_limit): 
         return
 
+    @abstractmethod
+    def finish_job(self, event_queue):
+        return
+
 
 class OpenNetwork(INetwork):
     def __init__(self):
@@ -56,3 +60,6 @@ class OpenNetwork(INetwork):
 
                 event_count = len(event_queue)
         return event_queue
+
+    def finish_job(self, event_queue):
+        return

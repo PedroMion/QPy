@@ -2,7 +2,8 @@ from collections import defaultdict
 
 
 class Job:
-    def __init__(self, arrival_time, current_server):
+    def __init__(self, id, arrival_time, current_server):
+        self.id = id
         self.arrival_time = arrival_time
         self.current_server = current_server
         self.arrival_time_at_current_server = arrival_time

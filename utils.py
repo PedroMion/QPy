@@ -15,7 +15,7 @@ def generate_exponential_arrivals(queue, delta, server, arrival_rate, event_coun
         new_arrival_time = round((time + exponential(arrival_rate)), 4)
 
         if new_arrival_time < delta:
-            new_job = Job(new_arrival_time)
+            new_job = Job(event_count, new_arrival_time, server)
 
             heapq.heappush(queue, (new_arrival_time, event_count, 'arrival', new_job, server))
 
