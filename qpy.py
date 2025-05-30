@@ -70,7 +70,6 @@ class Execution:
 
                 if route != 'end':
                     job.reroute(self.current_time, route)
-                    self.results.compute_server_departure(job, self.current_time, route)
                     service_time = self.servers[route].add_to_queue(job)
 
                     if service_time:
@@ -78,5 +77,5 @@ class Execution:
                 else:
                     job.reroute(self.current_time)
                     if job.arrival_time > self.warmup:
-                        self.results.compute_departure(job, self.current_time, server_id)
+                        self.results.compute_departure(job, self.current_time)
         return self.results

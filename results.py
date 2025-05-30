@@ -14,14 +14,16 @@ class SimulationResults:
     def compute_arrival(self, current_time, server_id):
         self.environment_metrics.compute_arrival(current_time)
         self.server_metrics[server_id].compute_arrival(current_time)
-    
-    def compute_server_departure(self, job, current_time, server_id):
-        self.server_metrics[server_id].compute_departure(job, current_time)
 
-    def compute_departure(self, job, current_time, server_id):
+    def compute_servers_departure(self, job, time):
+        for server_id in job.total_time_per_server.keys():
+            self.server_metrics[server_id].compute_departure(job, time)
+
+    def compute_departure(self, job, current_time):
         self.add_job_to_result(job)
         self.environment_metrics.compute_departure(job, current_time)
-        self.compute_server_departure(self, job, current_time, server_id)
+        
+        self.compute_servers_departure(job, current_time)
     
     def show_simulation_metrics(self):
         raise NotImplementedError()

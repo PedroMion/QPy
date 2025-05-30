@@ -27,7 +27,7 @@ class GeneralMetrics:
 
         self.total_number_of_processed_jobs += 1
         self.cumulative_time_in_system += (time - job.arrival_time)
-        self.cumulative_queue_times += job.time_in_queue
+        self.cumulative_queue_times += sum(job.queue_times_per_server.values())
 
     def get_number_of_processed_jobs(self):
         return self.total_number_of_processed_jobs
@@ -53,10 +53,14 @@ class ServerMetrics(GeneralMetrics):
         self.cumulative_visits_per_job = 0
     
     def compute_departure(self, job, time):
-        super().compute_departure(job, time)
+        self.count_number_of_jobs(time, 'departure')
 
-        self.cumulative_server_busy_time += job.time_in_system
-        self.cumulative_visits_per_job += job.visits[self.server_id] - 1 # Super computes one visit / Verify later
+        self.total_number_of_processed_jobs += 1
+
+        self.cumulative_queue_times += job.queue_times_per_server[self.server_id]
+        self.cumulative_server_busy_time += job.total_time_per_server[self.server_id] - job.queue_times_per_server[self.server_id]
+
+        self.cumulative_visits_per_job += job.total_visits_per_server[self.server_id]
     
     def get_mean_visits_per_job(self, total_jobs_processed_in_system):
         return self.cumulative_visits_per_job / total_jobs_processed_in_system if total_jobs_processed_in_system > 0 else 0
