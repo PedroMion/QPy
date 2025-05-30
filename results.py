@@ -3,9 +3,9 @@ from metrics import EnvironmentMetrics, ServerMetrics
 
 
 class SimulationResults:
-    def __init__(self, number_of_servers):
-        self.environment_metrics = EnvironmentMetrics()
-        self.server_metrics = [ServerMetrics(i) for i in range(number_of_servers)]
+    def __init__(self, number_of_servers, total_simulation_time):
+        self.environment_metrics = EnvironmentMetrics(total_simulation_time)
+        self.server_metrics = [ServerMetrics(i, total_simulation_time) for i in range(number_of_servers)]
         self.jobs = defaultdict(lambda: None)
     
     def add_job_to_result(self, job):
@@ -26,4 +26,17 @@ class SimulationResults:
         self.compute_servers_departure(job, current_time)
     
     def show_simulation_metrics(self):
-        raise NotImplementedError()
+        print('\n====================  Environment Metrics ====================\n')
+        print(f'Total number of processed jobs: {self.environment_metrics.get_number_of_processed_jobs()}')
+        print(f'E[T]: {self.environment_metrics.get_mean_time_in_system()}')
+        print(f'E[Tq]: {self.environment_metrics.get_mean_queue_time()}')
+        print(f'E[N]: {self.environment_metrics.get_mean_number_of_jobs_in_system()}')
+
+        for server in self.server_metrics:
+            print(f'\n==================== Server {server.server_id+1} Metrics ====================\n')
+            print(f'Total number of processed jobs: {server.get_number_of_processed_jobs()}')
+            print(f'E[T]: {server.get_mean_time_in_server()}')
+            print(f'E[Tq]: {server.get_mean_queue_time()}')
+            print(f'E[N]: {server.get_mean_number_of_jobs_in_system()}')
+            print(f'E[V]: {server.get_mean_visits_per_job()}')
+            print(f'Utilization: {server.get_server_utilization()}')

@@ -26,7 +26,7 @@ class Job:
 
 
     def reroute(self, completion_time, new_server = None):
-        self.total_time_per_server[self.current_server] += completion_time
+        self.total_time_per_server[self.current_server] += completion_time - self.arrival_time_at_current_server
 
         if new_server:
             self.switch_servers_and_compute_state(completion_time, new_server)

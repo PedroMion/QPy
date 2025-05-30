@@ -36,7 +36,7 @@ class Execution:
         self.event_queue = queue
         self.event_count = len(queue)
         self.network_configuration = network_configuration
-        self.results = SimulationResults(len(self.network_configuration.servers))
+        self.results = SimulationResults(len(self.network_configuration.servers), time)
     
     def serve_new_job(self, server, job, current_time, service_time):
         heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, 'departure', job, server))
