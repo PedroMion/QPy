@@ -1,24 +1,35 @@
 import heapq
 
 
-from network import OpenNetwork
+from network import ClosedNetwork, OpenNetwork
 from results import SimulationResults
 
 
 class Environment:
-    def __init__(self, num_of_terminals=None, average_think_time=None):
+    def __init__(self, number_of_terminals=None, average_think_time=None):
         self.network = None
+        self.is_closed = False
         
-        if num_of_terminals is None or average_think_time is None:
+        if number_of_terminals is None or average_think_time is None:
             self.network = OpenNetwork()
         else:
-            raise NotImplemented()
+            self.network = ClosedNetwork(average_think_time, number_of_terminals)
+            self.is_closed = True
     
     def add_server(self, average_service_time, queue_discipline = 'FCFS'):
         self.network.add_server(average_service_time, queue_discipline)
 
     def add_entry_point(self, server_id, average_arrival_time):
-        self.network.add_entry_point(server_id, average_arrival_time)
+        if not self.is_closed:
+            self.network.add_entry_point(server_id, average_arrival_time)
+        else:
+            raise ValueError('Closed network does not allow entry points')
+    
+    def add_terminals_routing_probability(self, destiny_server_id, probability):
+        if self.is_closed:
+            self.network.add_terminals_routing_probability(destiny_server_id, probability)
+        else:
+            raise ValueError('Open network does not allow terminal routing')
 
     def simulate(self, time_in_seconds, warmup_time):
         queue = self.network.generate_jobs(time_in_seconds + warmup_time)
@@ -78,4 +89,5 @@ class Execution:
                     job.reroute(self.current_time)
                     if job.arrival_time > self.warmup:
                         self.results.compute_departure(job, self.current_time)
+                    self.network_configuration.finish_job(self.event_queue, self.current_time)
         return self.results

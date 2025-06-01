@@ -1,5 +1,5 @@
 from metrics import ServerMetrics
-from utils import exponential
+from utils import exponential, randomly_draw_from_dictionary
 
 
 import random
@@ -29,14 +29,7 @@ class Server:
         return self.queue[0] 
     
     def route_job(self):
-        probability = random.random()
-        probability_sum = 0
-
-        for destiny in self.destinies.keys():
-            probability_sum += self.destinies[destiny]
-
-            if probability <= probability_sum:
-                return destiny
+        return randomly_draw_from_dictionary(self.destinies)
 
     def add_to_queue(self, job):
         self.job_count += 1

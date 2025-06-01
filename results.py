@@ -31,6 +31,7 @@ class SimulationResults:
         print(f'E[T]: {self.environment_metrics.get_mean_time_in_system()}')
         print(f'E[Tq]: {self.environment_metrics.get_mean_queue_time()}')
         print(f'E[N]: {self.environment_metrics.get_mean_number_of_jobs_in_system()}')
+        print(f'X: {self.environment_metrics.get_throughput()}')
 
         for server in self.server_metrics:
             print(f'\n==================== Server {server.server_id+1} Metrics ====================\n')
@@ -40,3 +41,4 @@ class SimulationResults:
             print(f'E[N]: {server.get_mean_number_of_jobs_in_system()}')
             print(f'E[V]: {server.get_mean_visits_per_job()}')
             print(f'Utilization: {server.get_server_utilization()}')
+            print(f'X: {server.get_throughput()}')
