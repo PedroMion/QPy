@@ -31,6 +31,9 @@ class GeneralMetrics:
     def get_mean_number_of_jobs_in_system(self):
         return (round(self.weighted_sum_number_of_jobs / self.total_simultion_time, 4)) if self.total_simultion_time > 0 else 0
 
+    def get_throughput(self):
+        return self.total_number_of_processed_jobs_in_system / self.total_simultion_time if self.total_simultion_time > 0 else 0
+
 class EnvironmentMetrics(GeneralMetrics):
     def __init__(self, total_simulation_time):
         super().__init__(total_simulation_time)
@@ -76,3 +79,6 @@ class ServerMetrics(GeneralMetrics):
 
     def get_server_utilization(self):
         return self.cumulative_server_busy_time / self.total_simultion_time if self.total_simultion_time > 0 else 0
+
+    def get_throughput(self):
+        return self.cumulative_visits_per_job / self.total_simultion_time
