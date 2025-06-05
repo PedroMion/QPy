@@ -30,7 +30,16 @@ class Server:
 
     def add_to_queue(self, job):
         self.job_count += 1
-        self.queue.append(job)
+
+        if self.job_count == 1 or job.priority == 0:
+            self.queue.append(job)
+        else:
+            index = 0
+            while index < len(self.queue):
+                if job.priority > self.queue[index].priority:
+                    break
+                index += 1
+            self.queue.insert(index, job)
 
         if self.job_count == 1:
             return self.service_time()
