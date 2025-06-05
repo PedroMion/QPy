@@ -27,6 +27,11 @@ def route_distribution(average_service_rate, distribution):
   else:
      return exponential(average_service_rate)
 
+def validate_distribution_input(input):
+  if input == 'constant':
+    return input
+  return 'exponential'
+
 def get_service_time_from_average_and_distribution(average_service_rate, distribution):
   return route_distribution(average_service_rate, distribution)
 
