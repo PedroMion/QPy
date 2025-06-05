@@ -16,12 +16,12 @@ class Environment:
             self.network = ClosedNetwork(average_think_time, number_of_terminals)
             self.is_closed = True
     
-    def add_server(self, average_service_time, queue_discipline = 'FCFS'):
-        self.network.add_server(average_service_time, queue_discipline)
+    def add_server(self, average_service_time, service_distribution = 'exponential', queue_discipline = 'FCFS'):
+        self.network.add_server(average_service_time, service_distribution, queue_discipline)
 
-    def add_entry_point(self, server_id, average_arrival_time):
+    def add_entry_point(self, server_id, average_arrival_time, arrival_discipline='exponential'):
         if not self.is_closed:
-            self.network.add_entry_point(server_id, average_arrival_time)
+            self.network.add_entry_point(server_id, average_arrival_time, arrival_discipline)
         else:
             raise ValueError('Closed network does not allow entry points')
     

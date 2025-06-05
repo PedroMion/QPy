@@ -1,13 +1,10 @@
-from metrics import ServerMetrics
-from utils import exponential, randomly_draw_from_dictionary
-
-
-import random
+from utils import get_service_time_from_average_and_distribution, randomly_draw_from_dictionary
 
 
 class Server:
-    def __init__(self, average_service_time, queue_discipline):
+    def __init__(self, average_service_time, service_time_distribution='exponential', queue_discipline='FCFS'):
         self.average_service_time = average_service_time
+        self.service_time_distribution = service_time_distribution
         self.queue_discipline = queue_discipline
         self.queue = []
         self.destinies = {"end": 1.0}
@@ -23,7 +20,7 @@ class Server:
         self.destinies[destiny_server] = probability
 
     def service_time(self):
-        return exponential(self.average_service_time)
+        return get_service_time_from_average_and_distribution(self.average_service_time, self.service_time_distribution)
     
     def get_first_in_line(self):
         return self.queue[0] 

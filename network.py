@@ -21,9 +21,9 @@ class INetwork(ABC):
 class OpenNetwork(INetwork):
     def __init__(self):
         self.servers = []
-        self.arrivals = {}
+        self.arrivals = defaultdict(lambda: defaultdict(lambda: 0))
     
-    def add_server(self, average_service_time, queue_discipline):
+    def add_server(self, average_service_time, service_distribution, queue_discipline):
         try:
             average_service_time = float(average_service_time)
         except ValueError:
@@ -32,16 +32,17 @@ class OpenNetwork(INetwork):
         if queue_discipline != 'SRT' and queue_discipline != 'FCFS':
             queue_discipline = 'FCFS'
         
-        self.servers.append(Server(average_service_time, queue_discipline))
-        server_id = len(self.servers) - 1
+        if service_distribution != 'constant':
+            service_distribution = 'exponential'
         
-        self.arrivals[server_id] = 0
+        self.servers.append(Server(average_service_time, service_distribution, queue_discipline))
+        server_id = len(self.servers) - 1
 
         return server_id
     
-    def add_entry_point(self, server_id, average_arrival_time):
+    def add_entry_point(self, server_id, average_arrival_time, arrival_distribution='exponential'):
         if server_id >= 0 and server_id < len(self.servers):
-            self.arrivals[server_id] += average_arrival_time
+            self.arrivals[server_id][arrival_distribution] += average_arrival_time
 
             return
 
@@ -52,10 +53,11 @@ class OpenNetwork(INetwork):
         event_count = 0
 
         for server in self.arrivals.keys():
-            if self.arrivals[server] > 0:
-                generate_exponential_arrivals(event_queue, time_limit, server, self.arrivals[server], event_count)
+            for distribution in self.arrivals[server].keys():
+                if self.arrivals[server][distribution] > 0:
+                    generate_exponential_arrivals(event_queue, time_limit, server, self.arrivals[server][distribution], distribution, event_count)
 
-                event_count = len(event_queue)
+                    event_count = len(event_queue)
         return event_queue
 
     def finish_job(self, event_queue, time):
