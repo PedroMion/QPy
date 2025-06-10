@@ -29,7 +29,7 @@ def route_distribution(average_service_rate, distribution):
 
 def randomize_priority(priorities):
   if priorities:
-    randomly_draw_from_dictionary(priorities)
+    return randomly_draw_from_dictionary(priorities)
   return 0
 
 def validate_distribution_input(input):

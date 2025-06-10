@@ -20,10 +20,10 @@ class Server:
         self.destinies[destiny_server] = probability
 
     def service_time(self):
-        return get_service_time_from_average_and_distribution(self.average_service_time, self.service_time_distribution)
+        return get_service_time_from_average_and_distribution(1 / self.average_service_time, self.service_time_distribution)
     
     def get_first_in_line(self):
-        return self.queue[0] 
+        return self.queue.pop(0)
     
     def route_job(self):
         return randomly_draw_from_dictionary(self.destinies)
@@ -31,7 +31,10 @@ class Server:
     def add_to_queue(self, job):
         self.job_count += 1
 
-        if self.job_count == 1 or job.priority == 0:
+        if self.job_count == 1:
+            return self.service_time()
+
+        if job.priority == 0:
             self.queue.append(job)
         else:
             index = 0
@@ -41,9 +44,6 @@ class Server:
                 index += 1
             self.queue.insert(index, job)
 
-        if self.job_count == 1:
-            return self.service_time()
-
         return
     
     def finish_current_job(self):
@@ -51,7 +51,6 @@ class Server:
         
         if self.job_count < 0:
             raise ValueError("No jobs currently in execution.")
-        self.queue.pop(0)
 
         if self.job_count > 0:
             return self.service_time()
