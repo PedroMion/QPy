@@ -26,7 +26,7 @@ class GeneralMetrics:
         return self.total_number_of_processed_jobs_in_system
     
     def get_mean_queue_time(self):
-        return self.cumulative_queue_times / self.total_number_of_processed_jobs_in_system
+        return self.cumulative_queue_times / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0
 
     def get_mean_number_of_jobs_in_system(self):
         return (round(self.weighted_sum_number_of_jobs / self.total_simultion_time, 4)) if self.total_simultion_time > 0 else 0
