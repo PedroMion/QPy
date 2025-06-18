@@ -4,9 +4,10 @@ from utils import validate_distribution_input, validade_priority_input
 
 
 class Environment:
-    def __init__(self, number_of_terminals=None, average_think_time=None):
+    def __init__(self, number_of_terminals=None, average_think_time=None, time_unit='seconds'):
         self.network = None
         self.is_closed = False
+        self.time_unit = time_unit
         
         if number_of_terminals is None or average_think_time is None:
             self.network = OpenNetwork()
@@ -27,15 +28,15 @@ class Environment:
         if self.is_closed:
             self.network.add_priorities(priorities)
 
-    def add_terminals_routing_probability(self, destiny_server_id, probability):
+    def add_terminals_routing_probability(self, destination_server_id, probability):
         if self.is_closed:
-            self.network.add_terminals_routing_probability(destiny_server_id, probability)
+            self.network.add_terminals_routing_probability(destination_server_id, probability)
         else:
             raise ValueError('Open network does not allow terminal routing')
 
     def simulate(self, time_in_seconds, warmup_time):
         queue = self.network.generate_jobs(time_in_seconds + warmup_time)
 
-        new_execution = Execution(time_in_seconds, warmup_time, queue, self.network)
+        new_execution = Execution(time_in_seconds, warmup_time, queue, self.network, self.time_unit)
 
         return new_execution.execute()

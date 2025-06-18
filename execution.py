@@ -5,14 +5,14 @@ from results import SimulationResults
 
 
 class Execution:
-    def __init__(self, time, warmup, queue, network_configuration):
+    def __init__(self, time, warmup, queue, network_configuration, time_unit):
         self.time = time
         self.warmup = warmup
         self.current_time = 0
         self.event_queue = queue
         self.event_count = len(queue)
         self.network_configuration = network_configuration
-        self.results = SimulationResults(len(self.network_configuration.servers), time)
+        self.results = SimulationResults(len(self.network_configuration.servers), time, time_unit)
     
     def serve_new_job(self, server, job, current_time, service_time):
         heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, 'departure', job, server))

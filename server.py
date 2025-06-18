@@ -10,14 +10,14 @@ class Server:
         self.destinies = {"end": 1.0}
         self.job_count = 0
     
-    def add_destiny(self, destiny_server, probability):
+    def add_destination(self, destination_server, probability):
         end_probability = self.destinies["end"]
 
         if probability > end_probability:
             raise ValueError("Too many probabilities, values exceeding 1")
         
         self.destinies["end"] -= probability
-        self.destinies[destiny_server] = probability
+        self.destinies[destination_server] = probability
 
     def service_time(self):
         return get_service_time_from_average_and_distribution(1 / self.average_service_time, self.service_time_distribution)

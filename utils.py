@@ -9,11 +9,11 @@ def randomly_draw_from_dictionary(probabilities):
   probability = random.random()
   probability_sum = 0
 
-  for destiny in probabilities.keys():
-    probability_sum += probabilities[destiny]
+  for possible_value in probabilities.keys():
+    probability_sum += probabilities[possible_value]
 
     if probability <= probability_sum:
-        return destiny
+        return possible_value
 
 def constant(value):
    return value

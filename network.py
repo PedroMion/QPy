@@ -101,15 +101,15 @@ class ClosedNetwork(INetwork):
         if validade_priority_input(priorities):
             self.priorities = priorities
 
-    def add_terminals_routing_probability(self, destiny_server_id, probability):
+    def add_terminals_routing_probability(self, destination_server_id, probability):
         end_probability = self.entry_point_routing["end"]
 
         if probability > end_probability:
             raise ValueError("Too many probabilities, values exceeding 1")
         
-        if destiny_server_id >= 0 and destiny_server_id < len(self.servers):
+        if destination_server_id >= 0 and destination_server_id < len(self.servers):
             self.entry_point_routing["end"] -= probability
-            self.entry_point_routing[destiny_server_id] += probability
+            self.entry_point_routing[destination_server_id] += probability
 
             return
 
