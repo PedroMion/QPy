@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from server import Server
-from utils import generate_arrivals, generate_new_job_closed_network, validade_priority_input
+from .server import Server
+from .utils import generate_arrivals, generate_new_job_closed_network, validade_priority_input
 
 
 class INetwork(ABC):

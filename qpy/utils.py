@@ -2,8 +2,8 @@ import random, numpy as np
 import heapq
 
 
-from job import Job
-from qpy import DistributionType
+from .job import Job
+from .enums import DistributionType
 
 
 def randomly_draw_from_dictionary(probabilities):

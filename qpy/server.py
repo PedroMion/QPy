@@ -1,4 +1,4 @@
-from utils import get_service_time_from_average_and_distribution, randomly_draw_from_dictionary
+from .utils import get_service_time_from_average_and_distribution, randomly_draw_from_dictionary
 
 
 class Server:

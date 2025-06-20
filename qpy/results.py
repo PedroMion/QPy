@@ -1,5 +1,5 @@
 from collections import defaultdict
-from metrics import EnvironmentMetrics, ServerMetrics
+from .metrics import EnvironmentMetrics, ServerMetrics
 
 
 class SimulationResults:
