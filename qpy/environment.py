@@ -1,11 +1,13 @@
-from .enums import DistributionType
+from .distribution import IDistribution, Distribution
 from .execution import Execution
 from .network import ClosedNetwork, OpenNetwork
-from .utils import validate_distribution_input, validade_priority_input
+from .results import SimulationResults
+from .utils import validade_priority_input
+from typing import Optional
 
 
 class Environment:
-    def __init__(self, number_of_terminals=None, average_think_time=None, time_unit='seconds'):
+    def __init__(self, number_of_terminals: Optional[int] = None, average_think_time: Optional[float] = None, time_unit: str = 'seconds'):
         self.network = None
         self.is_closed = False
         self.time_unit = time_unit
@@ -16,26 +18,26 @@ class Environment:
             self.network = ClosedNetwork(average_think_time, number_of_terminals)
             self.is_closed = True
     
-    def add_server(self, average_service_time, service_distribution = DistributionType.EXPONENTIAL, queue_discipline = 'FCFS'):
-        self.network.add_server(average_service_time, validate_distribution_input(service_distribution), queue_discipline)
+    def add_server(self, service_distribution: IDistribution, queue_discipline: str = 'FCFS'):
+        self.network.add_server(service_distribution, queue_discipline)
 
-    def add_entry_point(self, server_id, average_arrival_time, arrival_discipline=DistributionType.EXPONENTIAL, priority_distribution=None):
+    def add_entry_point(self, server_id: int, arrival_distribution: IDistribution, priority_distribution: Optional[dict] = None):
         if not self.is_closed:
-            self.network.add_entry_point(server_id, average_arrival_time, validate_distribution_input(arrival_discipline), validade_priority_input(priority_distribution))
+            self.network.add_entry_point(server_id, arrival_distribution, validade_priority_input(priority_distribution))
         else:
             raise ValueError('Closed network does not allow entry points')
     
-    def add_priority_closed_network(self, priorities):
+    def add_priority_closed_network(self, priorities: dict):
         if self.is_closed:
             self.network.add_priorities(priorities)
 
-    def add_terminals_routing_probability(self, destination_server_id, probability):
+    def add_terminals_routing_probability(self, destination_server_id: int, probability: float):
         if self.is_closed:
             self.network.add_terminals_routing_probability(destination_server_id, probability)
         else:
             raise ValueError('Open network does not allow terminal routing')
 
-    def simulate(self, time_in_seconds, warmup_time):
+    def simulate(self, time_in_seconds: float, warmup_time: float) -> SimulationResults:
         queue = self.network.generate_jobs(time_in_seconds + warmup_time)
 
         new_execution = Execution(time_in_seconds, warmup_time, queue, self.network, self.time_unit)
