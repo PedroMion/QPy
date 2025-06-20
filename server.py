@@ -2,7 +2,7 @@ from utils import get_service_time_from_average_and_distribution, randomly_draw_
 
 
 class Server:
-    def __init__(self, average_service_time, service_time_distribution='exponential', queue_discipline='FCFS'):
+    def __init__(self, average_service_time, service_time_distribution, queue_discipline='FCFS'):
         self.average_service_time = average_service_time
         self.service_time_distribution = service_time_distribution
         self.queue_discipline = queue_discipline

@@ -33,9 +33,6 @@ class OpenNetwork(INetwork):
         if queue_discipline != 'SRT' and queue_discipline != 'FCFS':
             queue_discipline = 'FCFS'
         
-        if service_distribution != 'constant':
-            service_distribution = 'exponential'
-        
         self.servers.append(Server(average_service_time, service_distribution, queue_discipline))
         server_id = len(self.servers) - 1
 

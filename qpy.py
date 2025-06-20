@@ -1,6 +1,18 @@
+from enum import Enum
 from execution import Execution
 from network import ClosedNetwork, OpenNetwork
 from utils import validate_distribution_input, validade_priority_input
+
+
+class DistributionType(str, Enum):
+    EXPONENTIAL = "exponential"
+    CONSTANT = "constant";
+    NORMAL = "normal"
+    UNIFORM = "uniform"
+
+    @staticmethod
+    def is_valid(value):
+        return value in DistributionType._value2member_map_
 
 
 class Environment:
@@ -15,10 +27,10 @@ class Environment:
             self.network = ClosedNetwork(average_think_time, number_of_terminals)
             self.is_closed = True
     
-    def add_server(self, average_service_time, service_distribution = 'exponential', queue_discipline = 'FCFS'):
+    def add_server(self, average_service_time, service_distribution = DistributionType.EXPONENTIAL, queue_discipline = 'FCFS'):
         self.network.add_server(average_service_time, validate_distribution_input(service_distribution), queue_discipline)
 
-    def add_entry_point(self, server_id, average_arrival_time, arrival_discipline='exponential', priority_distribution=None):
+    def add_entry_point(self, server_id, average_arrival_time, arrival_discipline=DistributionType.EXPONENTIAL, priority_distribution=None):
         if not self.is_closed:
             self.network.add_entry_point(server_id, average_arrival_time, validate_distribution_input(arrival_discipline), validade_priority_input(priority_distribution))
         else:

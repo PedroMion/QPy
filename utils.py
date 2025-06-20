@@ -3,6 +3,7 @@ import heapq
 
 
 from job import Job
+from qpy import DistributionType
 
 
 def randomly_draw_from_dictionary(probabilities):
@@ -21,11 +22,19 @@ def constant(value):
 def exponential(lambda_value):
   return -np.log(1-random.random())/lambda_value
 
+def normal(mu, sigma):
+  return random.gauss(mu, sigma)
+
+def uniform(a, b):
+  return random.uniform(a, b)
+
 def route_distribution(average_service_rate, distribution):
-  if distribution == 'constant':
+  if distribution == DistributionType.CONSTANT:
     return constant(average_service_rate)
-  else:
+  elif distribution == DistributionType.EXPONENTIAL:
     return exponential(average_service_rate)
+  else:
+    raise ValueError(f'Unsupported distribution: {distribution}')
 
 def randomize_priority(priorities):
   if priorities:
@@ -33,9 +42,9 @@ def randomize_priority(priorities):
   return 0
 
 def validate_distribution_input(input):
-  if input == 'constant':
+  if DistributionType.is_valid(input):
     return input
-  return 'exponential'
+  return 'exponential'  # Decide later between using exponential as default or raising exception
 
 def validade_priority_input(input):
   if not input:
