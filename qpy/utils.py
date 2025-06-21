@@ -1,8 +1,8 @@
-import random, numpy as np
+import random
 import heapq
 
 
-from .distribution import DistributionType, IDistribution
+from .distribution import IDistribution
 from .job import Job
 from typing import Optional
 

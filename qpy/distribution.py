@@ -2,7 +2,7 @@ import random, numpy as np
 
 
 from abc import ABC, abstractmethod
-from enum import Enum
+from pydantic import validate_call
 
 
 class IDistribution(ABC):
@@ -47,19 +47,23 @@ class Distribution():
         return super().__new__(cls, *args, **kwargs)
 
     @staticmethod
+    @validate_call
     def constant(value: float) -> ConstantDistribution:
         return ConstantDistribution(value)
     
     @staticmethod
+    @validate_call
     def exponential(lambda_value: float) -> ExponentialDistribution:
         return ExponentialDistribution(lambda_value)
 
     @staticmethod
+    @validate_call
     def uniform(lower_bound: float, upper_bound: float) -> UniformDistribution:
         if upper_bound >= lower_bound:
             return UniformDistribution(lower_bound, upper_bound)
         raise ValueError('Lower bound should be smaller than upper bound.')
     
     @staticmethod
+    @validate_call
     def normal(mu: float, sigma: float) -> NormalDistribution:
         return NormalDistribution(mu, sigma)
