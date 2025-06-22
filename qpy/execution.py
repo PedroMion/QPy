@@ -1,7 +1,7 @@
 import heapq
 
 
-from results import SimulationResults
+from .results import SimulationResults
 
 
 class Execution:
