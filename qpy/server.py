@@ -1,12 +1,12 @@
 from .distribution import IDistribution
+from .queue_discipline import IQueue
 from .utils import randomly_draw_from_dictionary
 
 
 class Server:
-    def __init__(self, service_distribution: IDistribution, queue_discipline: str):
+    def __init__(self, service_distribution: IDistribution, queue: IQueue):
         self.service_distribution = service_distribution
-        self.queue_discipline = queue_discipline
-        self.queue = []
+        self.queue = queue
         self.destinies = {"end": 1.0}
         self.job_count = 0
     
@@ -23,7 +23,7 @@ class Server:
         return self.service_distribution.sample()
     
     def get_first_in_line(self):
-        return self.queue.pop(0)
+        return self.queue.first_in_line()
     
     def route_job(self):
         return randomly_draw_from_dictionary(self.destinies)
@@ -34,15 +34,7 @@ class Server:
         if self.job_count == 1:
             return self.service_time()
 
-        if job.priority == 0:
-            self.queue.append(job)
-        else:
-            index = 0
-            while index < len(self.queue):
-                if job.priority > self.queue[index].priority:
-                    break
-                index += 1
-            self.queue.insert(index, job)
+        self.queue.insert(job)
 
         return
     

@@ -1,6 +1,7 @@
 from .distribution import IDistribution
 from .execution import Execution
 from .network import ClosedNetwork, OpenNetwork
+from .queue_discipline import IQueue
 from .results import SimulationResults
 from .utils import validade_priority_input
 from typing import Optional
@@ -21,7 +22,7 @@ class Environment():
             self.is_closed = True
     
     @validate_call(config=dict(arbitrary_types_allowed=True))
-    def add_server(self, service_distribution: IDistribution, queue_discipline: str = 'FCFS'):        
+    def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None):        
         self.network.add_server(service_distribution, queue_discipline)
     
     @validate_call(config=dict(arbitrary_types_allowed=True))

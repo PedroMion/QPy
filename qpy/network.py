@@ -1,5 +1,6 @@
-from .distribution import IDistribution
+from .distribution import IDistribution, Distribution
 from .server import Server
+from .queue_discipline import IQueue, QueueDiscipline
 from .utils import generate_arrivals, generate_new_job_closed_network, validade_priority_input
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -8,7 +9,7 @@ from typing import Optional
 
 class INetwork(ABC):
     @abstractmethod
-    def add_server(self, service_distribution: IDistribution, queue_discipline: str) -> int:
+    def add_server(self, service_distribution: IDistribution, queue_discipline: IQueue) -> int:
         return
     
     @abstractmethod
@@ -26,9 +27,9 @@ class OpenNetwork(INetwork):
         self.arrivals = defaultdict(lambda: [])
         self.priorities = defaultdict(lambda: None)
     
-    def add_server(self, service_distribution: IDistribution, queue_discipline: str) -> int:        
-        if queue_discipline != 'SRT' and queue_discipline != 'FCFS':
-            queue_discipline = 'FCFS'
+    def add_server(self, service_distribution: IDistribution, queue_discipline: IQueue) -> int:        
+        if not queue_discipline:
+            queue_discipline = QueueDiscipline.FCFS()
         
         self.servers.append(Server(service_distribution, queue_discipline))
         server_id = len(self.servers) - 1

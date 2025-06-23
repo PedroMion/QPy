@@ -1,7 +1,6 @@
 from .job import Job
 from abc import ABC, abstractmethod
 from collections import deque
-from pydantic import validate_call
 
 
 class IQueue(ABC):
@@ -30,6 +29,5 @@ class QueueDiscipline():
         return super().__new__(cls, *args, **kwargs)
 
     @staticmethod
-    @validate_call
     def FCFS():
         return FirstComeFirstServed()
