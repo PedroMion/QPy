@@ -1,11 +1,16 @@
+import heapq
+
+
 from .job import Job
 from abc import ABC, abstractmethod
 from collections import deque
+from pydantic import validate_call
+from typing import Optional
 
 
 class IQueue(ABC):
     @abstractmethod
-    def insert(self):
+    def insert(self, job, service_time):
         pass
     
     @abstractmethod
@@ -16,7 +21,39 @@ class FirstComeFirstServed(IQueue):
     def __init__(self):
         self.queue = deque()
     
-    def insert(self, job: Job):
+    def insert(self, job: Job, service_time: float = None):
+        self.queue.append(job)
+    
+    def first_in_line(self) -> Job:
+        return self.queue.popleft()
+
+class LastComeFirstServed(IQueue):
+    def __init__(self):
+        self.queue = deque()
+    
+    def insert(self, job: Job, service_time: float = None):
+        self.queue.append(job)
+    
+    def first_in_line(self) -> Job:
+        return self.queue.pop()
+
+class ShortestRemainingTime(IQueue):
+    def __init__(self, with_preemption: bool = False):
+        self.queue = []
+        self.with_preemption = with_preemption
+    
+    def insert(self, job: Job, service_time: float):
+        heapq.heappush(self.queue, (service_time, job))
+    
+    def first_in_line(self):
+        return heapq.heappop(self.queue)[1]
+
+class RoundRobin(IQueue):
+    def __init__(self, preemption_time: float):
+        self.queue = deque
+        self.preemption_time = preemption_time
+    
+    def insert(self, job: Job, service_time: float = None):
         self.queue.append(job)
     
     def first_in_line(self) -> Job:
@@ -29,5 +66,19 @@ class QueueDiscipline():
         return super().__new__(cls, *args, **kwargs)
 
     @staticmethod
-    def FCFS():
+    def fcfs():
         return FirstComeFirstServed()
+    
+    @staticmethod
+    def lcfs():
+        return LastComeFirstServed()
+
+    @staticmethod
+    @validate_call
+    def srt(with_preemption: Optional[bool] = True):
+        return ShortestRemainingTime(with_preemption)
+    
+    @staticmethod
+    @validate_call
+    def round_robin(preemption_time: float):
+        return RoundRobin(preemption_time)
