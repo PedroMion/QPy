@@ -53,7 +53,7 @@ class ServerExecution:
 
             self.execute_new_job(new_job, new_job_size, time)
 
-            return new_job_size
+            return next_job_in_line if self.is_next_event_departure() else (self.queue.preemption_time, new_job)
         
         self.reset_execution_configuration()
     
@@ -67,8 +67,12 @@ class ServerExecution:
             self.queue.insert(self.current_job_being_executed, self.remaining_time_for_current_job(time))
 
             self.execute_new_job(new_job, new_job_size, time)
-        else:
-            self.execute_new_job(self.current_job_being_executed, self.remaining_time_for_current_job(time), time)
+
+            return next_job if self.is_next_event_departure() else (self.queue.preemption_time, new_job)
+
+        self.execute_new_job(self.current_job_being_executed, self.remaining_time_for_current_job(time), time)
+
+        return (self.remaining_time_for_current_job() if self.is_next_event_departure() else self.queue.preemption_time, self.current_job_being_executed)
 
 class Server:
     def __init__(self, service_distribution: IDistribution, queue: IQueue):
@@ -84,21 +88,19 @@ class Server:
         
         self.destinies["end"] -= probability
         self.destinies[destination_server] = probability
-
-    def service_time(self):
-        return self.service_distribution.sample()
-    
-    def get_first_in_line(self):
-        return self.queue.first_in_line()
     
     def route_job(self):
         return randomly_draw_from_dictionary(self.destinies)
     
-    def finish_current_job(self):
-        self.job_count -= 1
-        
-        if self.job_count < 0:
-            raise ValueError("No jobs currently in execution.")
+    def is_next_event_departure(self):
+        return self.server_execution.is_next_event_departure()
 
-        if self.job_count > 0:
-            return self.service_time()
+    def job_arrival(self, job, time):
+        self.job_count += 1
+
+        return self.server_execution.job_arrival(job, time)
+    
+    def finish_execution(self, time, is_preemption=False):
+        if is_preemption:
+            return self.server_execution.preempt(time)
+        return self.server_execution.job_departure(time)

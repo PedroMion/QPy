@@ -14,10 +14,12 @@ class Execution:
         self.network_configuration = network_configuration
         self.results = SimulationResults(len(self.network_configuration.servers), time, time_unit)
     
-    def serve_new_job(self, server, job, current_time, service_time):
-        heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, 'departure', job, server))
-        job.serve(current_time)
+    def add_next_departure_event(self, server, job, current_time, service_time, event):
+        heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, event, job, server))
         self.event_count += 1
+        
+        if event == 'departure':
+            job.serve(current_time)
 
     def execute(self):
         while(len(self.event_queue) > 0 and self.current_time <= self.warmup + self.time):
@@ -29,24 +31,28 @@ class Execution:
 
             if next_event[2] == 'arrival':
                 job.reroute(self.current_time)
-                service_time = server.add_to_queue(job)
+                service_time = server.job_arrival(job, self.current_time)
 
                 if service_time:
                     self.serve_new_job(server_id, job, self.current_time, service_time)
                 if self.current_time > self.warmup:
                     self.results.compute_arrival(self.current_time, server_id)
+            
             else:
-                #case where event is departure
-                new_job_service_time = server.finish_current_job()
+                # Case where event is departure or preemption
+                new_job_being_executed = server.finish_execution(self.current_time, is_preemption = next_event[2] == 'preemption')
 
-                if new_job_service_time:
-                    self.serve_new_job(server_id, server.get_first_in_line(), self.current_time, new_job_service_time)
+                if new_job_being_executed:
+                    new_job_service_time = new_job_being_executed[0]
+                    new_job = new_job_being_executed[1]
+
+                    self.add_next_departure_event(server_id, new_job, self.current_time, new_job_service_time, event='departure' if server.is_next_event_departure() else 'preemption')
                 
                 route = server.route_job()
 
                 if route != 'end':
                     job.reroute(self.current_time, route)
-                    service_time = self.servers[route].add_to_queue(job)
+                    service_time = self.servers[route].job_arrival(job, self.current_time)
 
                     if service_time:
                         self.serve_new_job(route, job, self.current_time, service_time)
@@ -55,4 +61,5 @@ class Execution:
                     if job.arrival_time > self.warmup:
                         self.results.compute_departure(job, self.current_time)
                     self.network_configuration.finish_job(self.event_queue, self.current_time)
+
         return self.results
