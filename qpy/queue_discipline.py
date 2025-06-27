@@ -32,10 +32,13 @@ class FirstComeFirstServed(IQueue):
         self.discipline = Discipline.FCFS
     
     def insert(self, job: Job, service_time: float = None):
-        self.queue.append(job)
+        self.queue.append((service_time, job))
     
-    def first_in_line(self) -> Job:
-        return self.queue.popleft()
+    def first_in_line(self) -> tuple:
+        try:
+            return self.queue.popleft()
+        except:
+            return
 
 class LastComeFirstServed(IQueue):
     def __init__(self):
@@ -43,10 +46,13 @@ class LastComeFirstServed(IQueue):
         self.discipline = Discipline.LCFS
     
     def insert(self, job: Job, service_time: float = None):
-        self.queue.append(job)
+        self.queue.append((service_time, job))
     
-    def first_in_line(self) -> Job:
-        return self.queue.pop()
+    def first_in_line(self) -> tuple:
+        try:
+            return self.queue.pop()
+        except:
+            return
 
 class ShortestRemainingTime(IQueue):
     def __init__(self, with_preemption: bool = False):
@@ -57,20 +63,26 @@ class ShortestRemainingTime(IQueue):
     def insert(self, job: Job, service_time: float):
         heapq.heappush(self.queue, (service_time, job))
     
-    def first_in_line(self):
-        return heapq.heappop(self.queue)[1]
+    def first_in_line(self) -> tuple:
+        try:
+            return heapq.heappop(self.queue)
+        except:
+            return
 
 class RoundRobin(IQueue):
     def __init__(self, preemption_time: float):
-        self.queue = deque
+        self.queue = deque()
         self.preemption_time = preemption_time
         self.discipline = Discipline.RR
     
     def insert(self, job: Job, service_time: float = None):
-        self.queue.append(job)
+        self.queue.append((service_time, job))
     
-    def first_in_line(self) -> Job:
-        return self.queue.popleft()
+    def first_in_line(self) -> tuple:
+        try:
+            return self.queue.popleft()
+        except:
+            return
 
 class QueueDiscipline():
     def __new__(cls, *args, **kwargs):
