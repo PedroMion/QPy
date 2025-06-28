@@ -31,7 +31,11 @@ class Environment():
             self.network.add_entry_point(server_id, arrival_distribution, validade_priority_input(priority_distribution))
         else:
             raise ValueError('Closed network does not allow entry points')
-        
+
+    @validate_call
+    def add_servers_connection(self, origin_server_id: int, destination_server_id: int, routing_probability: float):
+        self.network.add_servers_connection(origin_server_id, destination_server_id, routing_probability)
+    
     @validate_call
     def add_priority_closed_network(self, priorities: dict):
         if self.is_closed:

@@ -34,7 +34,7 @@ class Execution:
                 service_time = server.job_arrival(job, self.current_time)
 
                 if service_time:
-                    self.serve_new_job(server_id, job, self.current_time, service_time)
+                    self.add_next_departure_event(server_id, job, self.current_time, service_time, event='departure' if server.is_next_event_departure() else 'preemption')
                 if self.current_time > self.warmup:
                     self.results.compute_arrival(self.current_time, server_id)
             
@@ -52,13 +52,19 @@ class Execution:
 
                 if route != 'end':
                     job.reroute(self.current_time, route)
-                    service_time = self.servers[route].job_arrival(job, self.current_time)
+                    destination_server = self.network_configuration.servers[route]
+                    
+                    if job.arrival_time > self.warmup:
+                        self.results.reroute(self.current_time, server_id, route)
+
+                    service_time = destination_server.job_arrival(job, self.current_time)
 
                     if service_time:
-                        self.serve_new_job(route, job, self.current_time, service_time)
+                        self.add_next_departure_event(route, job, self.current_time, service_time, event='departure' if destination_server.is_next_event_departure() else 'preemption')
                 else:
                     job.reroute(self.current_time)
                     if job.arrival_time > self.warmup:
+                        self.results.reroute(self.current_time, server_id, destination_server=None)
                         self.results.compute_departure(job, self.current_time)
                     self.network_configuration.finish_job(self.event_queue, self.current_time)
 

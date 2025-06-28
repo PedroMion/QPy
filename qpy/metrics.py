@@ -57,9 +57,10 @@ class ServerMetrics(GeneralMetrics):
         self.cumulative_server_busy_time = 0
         self.cumulative_visits_per_job = 0
     
-    def compute_departure(self, job, time):
+    def compute_departure(self, time):
         self.count_number_of_jobs(time, 'departure')
 
+    def compute_environment_departure(self, job, time):
         self.total_number_of_processed_jobs_in_system += 1
 
         self.cumulative_queue_times += job.queue_times_per_server[self.server_id]
@@ -82,3 +83,6 @@ class ServerMetrics(GeneralMetrics):
 
     def get_throughput(self):
         return self.cumulative_visits_per_job / self.total_simultion_time
+    
+    def get_demand(self):
+        return self.cumulative_time_in_server / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0

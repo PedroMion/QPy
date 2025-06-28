@@ -13,6 +13,10 @@ class INetwork(ABC):
         return
     
     @abstractmethod
+    def add_servers_connection(self, origin_server_id: int, destination_server_id: int, routing_probability: float):
+        return
+
+    @abstractmethod
     def generate_jobs(self, time_limit: float) -> list: 
         return
 
@@ -20,22 +24,35 @@ class INetwork(ABC):
     def finish_job(self, event_queue: list, time: float):
         return
 
-
-class OpenNetwork(INetwork):
+class BaseNetwork(INetwork):
     def __init__(self):
         self.servers = []
-        self.arrivals = defaultdict(lambda: [])
-        self.priorities = defaultdict(lambda: None)
-    
+
     def add_server(self, service_distribution: IDistribution, queue_discipline: IQueue) -> int:        
         if not queue_discipline:
-            queue_discipline = QueueDiscipline.FCFS()
+            queue_discipline = QueueDiscipline.fcfs()
         
         self.servers.append(Server(service_distribution, queue_discipline))
         server_id = len(self.servers) - 1
 
         return server_id
-    
+
+    def add_servers_connection(self, origin_server_id: int, destination_server_id: int, routing_probability: float):
+        number_of_servers = len(self.servers)
+
+        if origin_server_id < number_of_servers and destination_server_id < number_of_servers:
+            self.servers[origin_server_id].add_destination(destination_server_id, routing_probability)
+        
+        else:
+            raise ValueError(f'Provided server id is not valid. Received {origin_server_id if origin_server_id >= number_of_servers else destination_server_id} when only {number_of_servers} were created (Index starts at 0).')
+
+class OpenNetwork(BaseNetwork):
+    def __init__(self):
+        self.arrivals = defaultdict(lambda: [])
+        self.priorities = defaultdict(lambda: None)
+
+        super().__init__()
+
     def add_entry_point(self, server_id: int, arrival_distribution: IDistribution, priority_distribution: Optional[dict] = None):
         if server_id >= 0 and server_id < len(self.servers):
             self.arrivals[server_id].append(arrival_distribution)
@@ -63,25 +80,17 @@ class OpenNetwork(INetwork):
     
 
 
-class ClosedNetwork(INetwork):
+class ClosedNetwork(BaseNetwork):
     def __init__(self, think_time_distribution: IDistribution, number_of_terminals: int):
-        self.servers = []
         self.priorities = {}
         self.entry_point_routing = defaultdict(lambda: 0)
         self.think_time_distribution = think_time_distribution
         self.number_of_terminals = number_of_terminals
         self.job_count = 0
 
-        self.entry_point_routing['end'] = 1
-    
-    def add_server(self, service_distribution: IDistribution, queue_discipline: str) -> int:        
-        if queue_discipline != 'SRT' and queue_discipline != 'FCFS':
-            queue_discipline = 'FCFS'
-        
-        self.servers.append(Server(service_distribution, queue_discipline))
-        server_id = len(self.servers) - 1
+        super().__init__()
 
-        return server_id
+        self.entry_point_routing['end'] = 1
 
     def add_priorities(self, priorities: dict):
         if validade_priority_input(priorities):

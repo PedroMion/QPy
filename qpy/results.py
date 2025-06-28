@@ -16,9 +16,15 @@ class SimulationResults:
         self.environment_metrics.compute_arrival(current_time)
         self.server_metrics[server_id].compute_arrival(current_time)
 
+    def reroute(self, current_time, origin_server, destination_server):
+        self.server_metrics[origin_server].compute_departure(current_time)
+
+        if destination_server:
+            self.server_metrics[destination_server].compute_arrival(current_time)
+
     def compute_servers_departure(self, job, time):
-        for server_id in job.total_time_per_server.keys():
-            self.server_metrics[server_id].compute_departure(job, time)
+        for server_id in range(len(self.server_metrics)):
+            self.server_metrics[server_id].compute_environment_departure(job, time)
 
     def compute_departure(self, job, current_time):
         self.add_job_to_result(job)
@@ -33,6 +39,7 @@ class SimulationResults:
         print(f'E[Tq]: {self.environment_metrics.get_mean_queue_time()} {self.time_unit} per job')
         print(f'E[N]: {self.environment_metrics.get_mean_number_of_jobs_in_system()} jobs')
         print(f'X: {self.environment_metrics.get_throughput()} jobs per {self.time_unit}')
+        print(f'Dmax: {max(s.get_demand() for s in self.server_metrics)} {self.time_unit} per job')
 
         for server in self.server_metrics:
             print(f'\n==================== Server {server.server_id+1} Metrics ====================\n')
@@ -43,3 +50,4 @@ class SimulationResults:
             print(f'E[V]: {server.get_mean_visits_per_job()} visits per job')
             print(f'Utilization: {server.get_server_utilization() * 100}%')
             print(f'X: {server.get_throughput()} jobs per {self.time_unit}')
+            print(f'D: {server.get_demand()} {self.time_unit} per job')
