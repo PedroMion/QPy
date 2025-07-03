@@ -22,8 +22,8 @@ class Environment():
             self.is_closed = True
     
     @validate_call(config=dict(arbitrary_types_allowed=True))
-    def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None):        
-        self.network.add_server(service_distribution, queue_discipline)
+    def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None) -> int:        
+        return self.network.add_server(service_distribution, queue_discipline)
     
     @validate_call(config=dict(arbitrary_types_allowed=True))
     def add_entry_point(self, server_id: int, arrival_distribution: IDistribution, priority_distribution: Optional[dict] = None):

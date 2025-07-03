@@ -1,4 +1,6 @@
+from typing import Optional, Union
 from .distribution import IDistribution
+from .job import Job
 from .queue_discipline import Discipline, IQueue
 from .utils import randomly_draw_from_dictionary
 
@@ -15,22 +17,22 @@ class ServerExecution:
         self.current_job_size = 0
         self.time_current_execution_started = 0
 
-    def execute_new_job(self, job, size, time):
+    def execute_new_job(self, job: Job, size: float, time: float):
             self.current_job_being_executed = job
             self.current_job_size = size
             self.time_current_execution_started = time
 
-    def remaining_time_for_current_job(self, time):
+    def remaining_time_for_current_job(self, time: float) -> float:
         return self.current_job_size - (time - self.time_current_execution_started)
 
-    def is_next_event_departure(self):
+    def is_next_event_departure(self) -> bool:
         if self.queue.discipline == Discipline.RR:
             if self.current_job_size > self.queue.preemption_time:
                 return False
         
         return True
 
-    def job_arrival(self, job, time):
+    def job_arrival(self, job: Job, time: float) -> Optional[float]:
         job_size = self.service_distribution.sample()
         
         if self.current_job_being_executed == None:
@@ -44,7 +46,7 @@ class ServerExecution:
         
         self.queue.insert(job, job_size)
 
-    def job_departure(self, time):
+    def job_departure(self, time: float) -> Optional[tuple]:
         next_job_in_line = self.queue.first_in_line()
 
         if next_job_in_line:
@@ -57,7 +59,7 @@ class ServerExecution:
         
         self.reset_execution_configuration()
     
-    def preempt(self, time):
+    def preempt(self, time: float) -> tuple:
         next_job = self.queue.first_in_line
 
         if next_job:
@@ -77,30 +79,30 @@ class ServerExecution:
 class Server:
     def __init__(self, service_distribution: IDistribution, queue: IQueue):
         self.server_execution = ServerExecution(service_distribution, queue)
-        self.destinies = {"end": 1.0}
+        self.destinations = {"end": 1.0}
         self.job_count = 0
     
-    def add_destination(self, destination_server, probability):
-        end_probability = self.destinies["end"]
+    def add_destination(self, destination_server_id: int, probability: float):
+        end_probability = self.destinations["end"]
 
         if probability > end_probability:
             raise ValueError("Too many probabilities, values exceeding 1")
         
-        self.destinies["end"] -= probability
-        self.destinies[destination_server] = probability
+        self.destinations["end"] -= probability
+        self.destinations[destination_server_id] = probability
     
-    def route_job(self):
-        return randomly_draw_from_dictionary(self.destinies)
+    def route_job(self) -> Union[int, str]:
+        return randomly_draw_from_dictionary(self.destinations)
     
-    def is_next_event_departure(self):
+    def is_next_event_departure(self) -> bool:
         return self.server_execution.is_next_event_departure()
 
-    def job_arrival(self, job, time):
+    def job_arrival(self, job: Job, time: float) -> Optional[float]:
         self.job_count += 1
 
         return self.server_execution.job_arrival(job, time)
     
-    def finish_execution(self, time, is_preemption=False):
+    def finish_execution(self, time: float, is_preemption: bool=False) -> Optional[tuple]:
         if is_preemption:
             return self.server_execution.preempt(time)
         return self.server_execution.job_departure(time)

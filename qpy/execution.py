@@ -1,11 +1,13 @@
 import heapq
 
 
+from .job import Job
+from .network import INetwork
 from .results import SimulationResults
 
 
 class Execution:
-    def __init__(self, time, warmup, queue, network_configuration, time_unit):
+    def __init__(self, time: float, warmup: float, queue: list, network_configuration: INetwork, time_unit: str):
         self.time = time
         self.warmup = warmup
         self.current_time = 0
@@ -14,14 +16,14 @@ class Execution:
         self.network_configuration = network_configuration
         self.results = SimulationResults(len(self.network_configuration.servers), time, time_unit)
     
-    def add_next_departure_event(self, server, job, current_time, service_time, event):
+    def add_next_departure_event(self, server: int, job: Job, current_time: float, service_time: float, event: str):
         heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, event, job, server))
         self.event_count += 1
         
         if event == 'departure':
             job.serve(current_time)
 
-    def execute(self):
+    def execute(self) -> SimulationResults:
         while(len(self.event_queue) > 0 and self.current_time <= self.warmup + self.time):
             next_event = heapq.heappop(self.event_queue)
             self.current_time = next_event[0]
