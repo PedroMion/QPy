@@ -121,4 +121,4 @@ class ClosedNetwork(BaseNetwork):
         return event_queue
 
     def finish_job(self, event_queue: list, time: float):
-        generate_new_job_closed_network(event_queue, self.job_count, time, self.average_think_time, self.entry_point_routing, self.priorities)
+        generate_new_job_closed_network(event_queue, self.job_count, time, self.think_time_distribution, self.entry_point_routing, self.priorities)

@@ -9,16 +9,16 @@ from pydantic import validate_call
 
 
 class Environment():
-    @validate_call
-    def __init__(self, number_of_terminals: Optional[int] = None, average_think_time: Optional[float] = None, time_unit: str = 'seconds'):
+    @validate_call(config=dict(arbitrary_types_allowed=True))
+    def __init__(self, number_of_terminals: Optional[int] = None, think_time_distribution: Optional[IDistribution] = None, time_unit: str = 'seconds'):
         self.network = None
         self.is_closed = False
         self.time_unit = time_unit
         
-        if number_of_terminals is None or average_think_time is None:
+        if number_of_terminals is None or think_time_distribution is None:
             self.network = OpenNetwork()
         else:
-            self.network = ClosedNetwork(average_think_time, number_of_terminals)
+            self.network = ClosedNetwork(think_time_distribution, number_of_terminals)
             self.is_closed = True
     
     @validate_call(config=dict(arbitrary_types_allowed=True))
