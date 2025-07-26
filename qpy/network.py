@@ -1,4 +1,4 @@
-from .distribution import IDistribution, Distribution
+from .distribution import IDistribution
 from .server import Server
 from .queue_discipline import IQueue, QueueDiscipline
 from .utils import generate_arrivals, generate_new_job_closed_network, validade_priority_input
@@ -28,7 +28,7 @@ class BaseNetwork(INetwork):
     def __init__(self):
         self.servers = []
 
-    def add_server(self, service_distribution: IDistribution, queue_discipline: IQueue) -> int:        
+    def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None) -> int:        
         if not queue_discipline:
             queue_discipline = QueueDiscipline.fcfs()
         
