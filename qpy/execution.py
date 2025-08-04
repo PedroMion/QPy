@@ -1,19 +1,12 @@
 import heapq
 
 
+from .event import Event
 from .job import Job
 from .network import INetwork
 from .results import SimulationResults
 from .server import Server
 
-
-class Event:
-    def __init__(self, current_time: float, event_id: int, event_type: str, job: Job, server_id: int):
-        self.current_time = current_time
-        self.id = event_id
-        self.type = event_type
-        self.job = job
-        self.server_id = server_id
 
 class Execution:
     def __init__(self, time: float, warmup: float, queue: list, network_configuration: INetwork, time_unit: str):
@@ -23,17 +16,19 @@ class Execution:
         self.event_queue = queue
         self.event_count = len(queue)
         self.network_configuration = network_configuration
+        self.next_departure_by_server = [0] * len(network_configuration.servers)
         self.results = SimulationResults(len(self.network_configuration.servers), time, time_unit)
     
     def add_next_departure_event(self, server: int, job: Job, current_time: float, service_time: float, event: str):
-        heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, event, job, server))
+        new_event_object = Event(current_time + service_time, self.event_queue, event, job, server)
+
+        heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, new_event_object))
+        self.next_departure_by_server[server] = new_event_object
+
         self.event_count += 1
         
         if event == 'departure':
             job.serve(current_time)
-
-    def get_event_from_queue_tuple(self, event_tuple: tuple) -> Event:
-        return Event(event_tuple[0], event_tuple[1], event_tuple[2], event_tuple[3], event_tuple[4])
 
     def route_job_after_event(self, event: Event, server: Server):
         route = server.route_job()
@@ -78,7 +73,11 @@ class Execution:
 
     def execute(self) -> SimulationResults:
         while(len(self.event_queue) > 0 and self.current_time <= self.warmup + self.time):
-            next_event = self.get_event_from_queue_tuple(heapq.heappop(self.event_queue))
+            next_event = heapq.heappop(self.event_queue)[2]
+
+            if not next_event:
+                continue
+
             server = self.network_configuration.servers[next_event.server_id]
             
             self.current_time = next_event.current_time

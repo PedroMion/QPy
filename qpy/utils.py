@@ -3,6 +3,7 @@ import heapq
 
 
 from .distribution import IDistribution
+from .event import Event
 from .job import Job
 from typing import Optional
 
@@ -53,7 +54,7 @@ def generate_new_job_closed_network(queue: list, event_count: int, time: float, 
 
   new_job = Job(event_count, time + think_time, routing, randomize_priority(priorities))
 
-  heapq.heappush(queue, (time + think_time, event_count, 'arrival', new_job, routing))
+  heapq.heappush(queue, (time + think_time, event_count, Event(time + think_time, event_count, 'arrival', new_job, routing)))
     
 
 def generate_arrivals(queue: list, event_count: int, delta: float, server: int, arrival_distribution: IDistribution, priorities: Optional[dict] = None):
@@ -64,8 +65,8 @@ def generate_arrivals(queue: list, event_count: int, delta: float, server: int, 
 
       if new_arrival_time < delta:
           new_job = Job(event_count, new_arrival_time, server, randomize_priority(priorities))
-
-          heapq.heappush(queue, (new_arrival_time, event_count, 'arrival', new_job, server))
+          
+          heapq.heappush(queue, (new_arrival_time, event_count, Event(new_arrival_time, event_count, 'arrival', new_job, server)))
 
       time = new_arrival_time
       event_count += 1
