@@ -32,8 +32,8 @@ class BaseNetwork(INetwork):
         if not queue_discipline:
             queue_discipline = QueueDiscipline.fcfs()
         
-        self.servers.append(Server(service_distribution, queue_discipline))
-        server_id = len(self.servers) - 1
+        server_id = len(self.servers)
+        self.servers.append(Server(server_id, service_distribution, queue_discipline))
 
         return server_id
 

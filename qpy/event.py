@@ -8,4 +8,5 @@ class Event:
         self.type = event_type
         self.job = job
         self.server_id = server_id
+        self.server = None
         self.canceled = False

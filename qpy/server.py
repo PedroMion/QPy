@@ -1,5 +1,6 @@
 from typing import Optional, Union
 from .distribution import IDistribution
+from .event import Event
 from .job import Job
 from .queue_discipline import Discipline, IQueue
 from .utils import randomly_draw_from_dictionary
@@ -32,7 +33,7 @@ class ServerExecution:
         
         return True
 
-    def job_arrival(self, job: Job, time: float) -> Optional[float]:
+    def job_arrival(self, job: Job, time: float, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
         
         if self.current_job_being_executed == None:
@@ -41,8 +42,12 @@ class ServerExecution:
             return job_size
         if self.queue.discipline == Discipline.SRT and self.queue.with_preemption:
             if job_size < self.remaining_time_for_current_job(time):
-                # Decide how to do this. How to impact the event queue properly
-                pass
+                self.queue.insert(self.current_job_being_executed, self.remaining_time_for_current_job(time))
+                event.canceled = True
+
+                self.execute_new_job(job, job_size, time)
+
+                return job_size
         
         self.queue.insert(job, job_size)
 
@@ -77,7 +82,8 @@ class ServerExecution:
         return (self.remaining_time_for_current_job() if self.is_next_event_departure() else self.queue.preemption_time, self.current_job_being_executed)
 
 class Server:
-    def __init__(self, service_distribution: IDistribution, queue: IQueue):
+    def __init__(self, id: int, service_distribution: IDistribution, queue: IQueue):
+        self.id = id
         self.server_execution = ServerExecution(service_distribution, queue)
         self.destinations = {"end": 1.0}
         self.job_count = 0
@@ -97,10 +103,10 @@ class Server:
     def is_next_event_departure(self) -> bool:
         return self.server_execution.is_next_event_departure()
 
-    def job_arrival(self, job: Job, time: float) -> Optional[float]:
+    def job_arrival(self, job: Job, time: float, event: Event) -> Optional[float]:
         self.job_count += 1
 
-        return self.server_execution.job_arrival(job, time)
+        return self.server_execution.job_arrival(job, time, event)
     
     def finish_execution(self, time: float, is_preemption: bool=False) -> Optional[tuple]:
         if is_preemption:
