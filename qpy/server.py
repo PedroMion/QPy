@@ -4,6 +4,7 @@ from .event import Event
 from .job import Job
 from .queue_discipline import Discipline, IQueue
 from .utils import randomly_draw_from_dictionary
+from .validation_utils import validate_object_params_not_none, validate_number_params_not_negative_and_not_none
 
 
 class ServerExecution:
@@ -19,11 +20,19 @@ class ServerExecution:
         self.time_current_execution_started = 0
 
     def execute_new_job(self, job: Job, size: float, time: float):
-            self.current_job_being_executed = job
-            self.current_job_size = size
-            self.time_current_execution_started = time
+        validate_object_params_not_none('execute_new_job', job=job)
+        validate_number_params_not_negative_and_not_none(function_name='execute_new_job', size=size, time=time)
+
+        self.current_job_being_executed = job
+        self.current_job_size = size
+        self.time_current_execution_started = time
 
     def remaining_time_for_current_job(self, time: float) -> float:
+        validate_number_params_not_negative_and_not_none(function_name='remaining_time_for_current_job', time=time)
+
+        if time < self.time_current_execution_started:
+            raise ValueError(f'Job can\'t have negative reimaining time.\nCurrent time: {time} | Time execution started: {self.time_current_execution_started}')
+
         return self.current_job_size - (time - self.time_current_execution_started)
 
     def is_next_event_departure(self) -> bool:

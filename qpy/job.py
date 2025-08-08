@@ -18,7 +18,7 @@ class Job:
         self.total_visits_per_server[current_server] += 1
 
     def switch_servers_and_compute_state(self, time: float, server: int):
-        validate_number_params_not_negative_and_not_none('switch_servers_and_compute_state', time=time, server=server)
+        validate_number_params_not_negative_and_not_none(function_name='switch_servers_and_compute_state', time=time, server=server)
 
         self.current_server = server
         self.arrival_time_at_current_server = time
@@ -33,8 +33,8 @@ class Job:
 
 
     def reroute(self, completion_time: float, new_server: int = None):
-        validate_number_params_not_negative_and_not_none('reroute', completion_time=completion_time)
-        validate_number_params_not_negative('reroute', new_server=new_server)
+        validate_number_params_not_negative_and_not_none(function_name='reroute', completion_time=completion_time)
+        validate_number_params_not_negative(function_name='reroute', new_server=new_server)
 
         
         self.total_time_per_server[self.current_server] += completion_time - self.arrival_time_at_current_server
