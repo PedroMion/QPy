@@ -23,8 +23,8 @@ def randomize_priority(priorities):
     return randomly_draw_from_dictionary(priorities)
   return 0
 
-def validade_priority_input(input):
-  if not input:
+def validade_priority_input(input, with_priority = True):
+  if not input or not with_priority:
     return
 
   cumulative_sum = 0
