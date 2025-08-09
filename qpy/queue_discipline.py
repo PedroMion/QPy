@@ -14,6 +14,7 @@ class Discipline(Enum):
     LCFS = auto()
     SRT  = auto()
     RR   = auto()
+    PRIORITY = auto()
 
 class IQueue(ABC):
     discipline: Discipline
@@ -81,6 +82,23 @@ class RoundRobin(IQueue):
     def first_in_line(self) -> tuple:
         try:
             return self.queue.popleft()
+        except:
+            return
+
+class PriorityQueue(IQueue):
+    def __init__(self, with_preemption: bool = False):
+        self.queue = []
+        self.with_preemption = with_preemption
+        self.discipline = Discipline.PRIORITY
+
+    def insert(self, job: Job, service_time: float):
+        heapq.heappush(self.queue, (-job.priority, job.arrival_time_at_current_server, job, service_time))
+    
+    def first_in_line(self):
+        try:
+            queue_element = heapq.heappop(self.queue)
+
+            return (queue_element[2], queue_element[3])
         except:
             return
 
