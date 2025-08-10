@@ -27,6 +27,10 @@ class IQueue(ABC):
     def first_in_line(self):
         pass
 
+    @abstractmethod
+    def with_preemption(self):
+        pass
+
 class FirstComeFirstServed(IQueue):
     def __init__(self):
         self.queue = deque()
@@ -40,6 +44,9 @@ class FirstComeFirstServed(IQueue):
             return self.queue.popleft()
         except:
             return
+    
+    def with_preemption(self):
+        return False
 
 class LastComeFirstServed(IQueue):
     def __init__(self):
@@ -55,10 +62,13 @@ class LastComeFirstServed(IQueue):
         except:
             return
 
+    def with_preemption(self):
+        return False
+
 class ShortestRemainingTime(IQueue):
     def __init__(self, with_preemption: bool = False):
         self.queue = []
-        self.with_preemption = with_preemption
+        self.preemption = with_preemption
         self.discipline = Discipline.SRT
     
     def insert(self, job: Job, service_time: float):
@@ -69,6 +79,9 @@ class ShortestRemainingTime(IQueue):
             return heapq.heappop(self.queue)
         except:
             return
+
+    def with_preemption(self):
+        return self.preemption
 
 class RoundRobin(IQueue):
     def __init__(self, preemption_time: float):
@@ -84,11 +97,14 @@ class RoundRobin(IQueue):
             return self.queue.popleft()
         except:
             return
+    
+    def with_preemption(self):
+        return True
 
 class PriorityQueue(IQueue):
     def __init__(self, with_preemption: bool = False):
         self.queue = []
-        self.with_preemption = with_preemption
+        self.preemption = with_preemption
         self.discipline = Discipline.PRIORITY
 
     def insert(self, job: Job, service_time: float):
@@ -101,6 +117,9 @@ class PriorityQueue(IQueue):
             return (queue_element[2], queue_element[3])
         except:
             return
+    
+    def with_preemption(self):
+        return self.preemption
 
 class QueueDiscipline():
     def __new__(cls, *args, **kwargs):
@@ -125,3 +144,8 @@ class QueueDiscipline():
     @validate_call
     def round_robin(preemption_time: float):
         return RoundRobin(preemption_time)
+    
+    @staticmethod
+    @validate_call
+    def priority_queue(with_preemption: Optional[bool] = False):
+        return PriorityQueue(with_preemption)

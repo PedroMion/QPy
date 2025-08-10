@@ -42,6 +42,17 @@ class ServerExecution:
         
         return True
 
+    def should_preempt(self, new_job: Job, new_job_size: float, time: float):
+        validate_object_params_not_none('should_preempt', new_job=new_job)
+        validate_number_params_not_negative_and_not_none('should_preempt', new_job_size=new_job_size, time=time)
+
+        if self.queue.discipline == Discipline.SRT:
+            return new_job_size < self.remaining_time_for_current_job(time)
+        if self.queue.discipline == Discipline.PRIORITY:
+            return new_job.priority > self.current_job_being_executed.priority
+        
+        return False
+
     def job_arrival(self, job: Job, time: float, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
         
@@ -49,8 +60,9 @@ class ServerExecution:
             self.execute_new_job(job, job_size, time)
 
             return job_size
-        if self.queue.discipline == Discipline.SRT and self.queue.with_preemption:
-            if job_size < self.remaining_time_for_current_job(time):
+        
+        if self.queue.with_preemption() and (self.queue.discipline == Discipline.SRT or self.queue.discipline == Discipline.PRIORITY):
+            if self.should_preempt(job, job_size, time):
                 self.queue.insert(self.current_job_being_executed, self.remaining_time_for_current_job(time))
                 event.canceled = True
 
