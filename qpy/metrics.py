@@ -3,7 +3,7 @@ from collections import defaultdict
 
 class GeneralMetrics:
     def __init__(self, total_simulation_time):
-        self.total_simultion_time = total_simulation_time
+        self.total_simulation_time = total_simulation_time
         self.total_number_of_processed_jobs_in_system = 0
         self.current_number_of_jobs = 0
         self.weighted_sum_number_of_jobs = 0
@@ -29,10 +29,10 @@ class GeneralMetrics:
         return self.cumulative_queue_times / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0
 
     def get_mean_number_of_jobs_in_system(self):
-        return (round(self.weighted_sum_number_of_jobs / self.total_simultion_time, 4)) if self.total_simultion_time > 0 else 0
+        return (round(self.weighted_sum_number_of_jobs / self.total_simulation_time, 4)) if self.total_simulation_time > 0 else 0
 
     def get_throughput(self):
-        return self.total_number_of_processed_jobs_in_system / self.total_simultion_time if self.total_simultion_time > 0 else 0
+        return self.total_number_of_processed_jobs_in_system / self.total_simulation_time if self.total_simulation_time > 0 else 0
 
 class EnvironmentMetrics(GeneralMetrics):
     def __init__(self, total_simulation_time):
@@ -79,10 +79,23 @@ class ServerMetrics(GeneralMetrics):
         return self.cumulative_visits_per_job / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0
 
     def get_server_utilization(self):
-        return self.cumulative_server_busy_time / self.total_simultion_time if self.total_simultion_time > 0 else 0
+        return self.cumulative_server_busy_time / self.total_simulation_time if self.total_simulation_time > 0 else 0
 
     def get_throughput(self):
-        return self.cumulative_visits_per_job / self.total_simultion_time
+        return self.cumulative_visits_per_job / self.total_simulation_time
     
     def get_demand(self):
         return self.cumulative_time_in_server / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0
+
+class PriorityMetrics(GeneralMetrics):
+    def __init__(self, total_simulation_time):
+        super().__init__(total_simulation_time)
+        self.cumulative_time_in_system = 0
+    
+    def get_mean_time_in_system(self):
+        return self.cumulative_time_in_system / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0
+    
+    def compute_departure(self, job, time):
+        self.total_number_of_processed_jobs_in_system += 1
+        self.cumulative_time_in_system += (time - job.arrival_time)
+        self.cumulative_queue_times += sum(job.queue_times_per_server.values())

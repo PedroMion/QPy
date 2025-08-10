@@ -1,11 +1,12 @@
 from collections import defaultdict
-from .metrics import EnvironmentMetrics, ServerMetrics
+from .metrics import EnvironmentMetrics, PriorityMetrics, ServerMetrics
 
 
 class SimulationResults:
     def __init__(self, number_of_servers, total_simulation_time, time_unit):
         self.environment_metrics = EnvironmentMetrics(total_simulation_time)
         self.server_metrics = [ServerMetrics(i, total_simulation_time) for i in range(number_of_servers)]
+        self.priority_metrics = defaultdict(lambda: PriorityMetrics(total_simulation_time))
         self.jobs = defaultdict(lambda: None)
         self.time_unit = time_unit
     
@@ -29,6 +30,7 @@ class SimulationResults:
     def compute_departure(self, job, current_time):
         self.add_job_to_result(job)
         self.environment_metrics.compute_departure(job, current_time)
+        self.priority_metrics[job.priority].compute_departure(job, current_time)
         
         self.compute_servers_departure(job, current_time)
     
@@ -51,3 +53,10 @@ class SimulationResults:
             print(f'Utilization: {server.get_server_utilization() * 100}%')
             print(f'X: {server.get_throughput()} jobs per {self.time_unit}')
             print(f'D: {server.get_demand()} {self.time_unit} per job')
+        
+        if len(self.priority_metrics.keys()) > 1:
+            for key, value in sorted(self.priority_metrics.items()):
+                print(f'\n==================== Priority {key} Metrics ====================\n')
+                print(f'Total number of processed jobs: {value.get_number_of_processed_jobs()}')
+                print(f'E[T]: {value.get_mean_time_in_system()} {self.time_unit} per job')
+                print(f'E[Tq]: {value.get_mean_queue_time()} {self.time_unit} per job')
