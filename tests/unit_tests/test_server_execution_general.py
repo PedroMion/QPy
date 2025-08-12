@@ -65,7 +65,7 @@ def test_execute_new_job_when_information_is_valid_should_update_variables():
 """job None | size >= 0 | time >= 0 (Inválido)"""
 def test_execute_new_job_when_job_is_none_should_raise_exception():
     for test_object in get_all_test_objects():
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             test_object.execute_new_job(None, JOB_SIZE, TIME)
 
 """job Not None | size < 0 | time >= 0 (Inválido)"""
