@@ -2,6 +2,34 @@ from collections import defaultdict
 from .metrics import EnvironmentMetrics, PriorityMetrics, ServerMetrics
 
 
+class EnvironmentResults:
+    def __init__(self, number_of_processed_jobs: int, mean_time_in_system: float, mean_queue_time: float, mean_number_of_jobs_in_system: float, throughput: float, max_demand: float):
+        self.number_of_processed_jobs = number_of_processed_jobs
+        self.mean_time_in_system = mean_time_in_system
+        self.mean_queue_time = mean_queue_time
+        self.mean_number_of_jobs_in_system = mean_number_of_jobs_in_system
+        self.throughput = throughput
+        self.max_demand = max_demand
+
+
+class ServerResults:
+    def __init__(self, number_of_processed_jobs: int, mean_time_in_server: float, mean_queue_time: float, mean_number_of_jobs_in_server: int, mean_visits_per_job: float, server_utilization: float, throughput: float, demand: float):
+        self.number_of_processed_jobs = number_of_processed_jobs
+        self.mean_time_in_server = mean_time_in_server
+        self.mean_queue_time = mean_queue_time
+        self.mean_number_of_jobs_in_server = mean_number_of_jobs_in_server
+        self.mean_visits_per_job = mean_visits_per_job
+        self.server_utilization = server_utilization
+        self.throughput = throughput
+        self.demand = demand
+
+
+class PriorityResults:
+    def __init__(self, number_of_processed_jobs: int, mean_time_in_system: float, mean_queue_time: float):
+        self.number_of_processed_jobs = number_of_processed_jobs
+        self.mean_time_in_system = mean_time_in_system
+        self.mean_queue_time = mean_queue_time
+
 class SimulationResults:
     def __init__(self, number_of_servers, total_simulation_time, time_unit):
         self.environment_metrics = EnvironmentMetrics(total_simulation_time)
