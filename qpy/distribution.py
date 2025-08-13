@@ -49,16 +49,48 @@ class Distribution():
     @staticmethod
     @validate_call
     def constant(value: float) -> ConstantDistribution:
+        """
+        Returns a distribution of type constant.
+
+        Parameters
+        ----------
+        value : float - Required
+            The value to always be returned when this distribution is sampled.
+        """
         return ConstantDistribution(value)
     
     @staticmethod
     @validate_call
     def exponential(lambda_value: float) -> ExponentialDistribution:
+        """
+        Returns a distribution of type exponential.
+
+        Parameters
+        ----------
+        lambda_value : float - Required
+            The rate parameter (lambda) of the exponential distribution.
+        """
         return ExponentialDistribution(lambda_value)
 
     @staticmethod
     @validate_call
     def uniform(lower_bound: float, upper_bound: float) -> UniformDistribution:
+        """
+        Returns a distribution of type uniform.
+
+        Parameters
+        ----------
+        lower_bound : float - Required
+            The lower bound of the uniform distribution.
+
+        upper_bound : float - Required
+            The upper bound of the uniform distribution. Must be greater than or equal to the lower bound.
+
+        Raises
+        ------
+        ValueError
+            If the lower bound is greater than the upper bound.
+        """
         if upper_bound >= lower_bound:
             return UniformDistribution(lower_bound, upper_bound)
         raise ValueError('Lower bound should be smaller than upper bound.')
@@ -66,4 +98,15 @@ class Distribution():
     @staticmethod
     @validate_call
     def normal(mu: float, sigma: float) -> NormalDistribution:
+        """
+        Returns a distribution of type normal.
+
+        Parameters
+        ----------
+        mu : float - Required
+            The mean (mu) of the normal distribution.
+
+        sigma : float - Required
+            The standard deviation (sigma) of the normal distribution.
+        """
         return NormalDistribution(mu, sigma)

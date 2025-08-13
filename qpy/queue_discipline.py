@@ -129,23 +129,55 @@ class QueueDiscipline():
 
     @staticmethod
     def fcfs():
+        """
+        Returns a queue with discipline First Come First Served (FCFS). 
+        This is the standard queue discipline used in most applications.
+        """
         return FirstComeFirstServed()
     
     @staticmethod
     def lcfs():
+        """
+        Returns a queue with discipline Last Come First Served (LCFS).
+        In this discipline, the most recently arrived job is served first.
+        """
         return LastComeFirstServed()
 
     @staticmethod
     @validate_call
     def srt(with_preemption: Optional[bool] = True):
+        """
+        Returns a queue with discipline Shortest Remaining Time (SRT).
+
+        Parameters
+        ----------
+        with_preemption : bool - Optional
+            If True, enables preemption. A job in service may be preempted if a new job arrives with a shorter remaining time. Default is True.
+        """
         return ShortestRemainingTime(with_preemption)
     
     @staticmethod
     @validate_call
     def round_robin(preemption_time: float):
+        """
+        Returns a queue with discipline Round Robin.
+
+        Parameters
+        ----------
+        preemption_time : float - Required
+            The time quantum after which the current job is preempted and the next one is served.
+        """
         return RoundRobin(preemption_time)
     
     @staticmethod
     @validate_call
     def priority_queue(with_preemption: Optional[bool] = False):
+        """
+        Returns a queue with discipline Priority Queue.
+
+        Parameters
+        ----------
+        with_preemption : bool - Optional
+            If True, enables preemption based on job priority. A job in service may be preempted by a higher-priority job. Default is False.
+        """
         return PriorityQueue(with_preemption)
