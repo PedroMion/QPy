@@ -38,6 +38,7 @@ class Execution:
             
             if event.job.arrival_time > self.warmup:
                 self.results.reroute(self.current_time, event.server_id, route)
+                self.results.compute_arrival(self.current_time, route)
 
             service_time = destination_server.job_arrival(event.job, self.current_time, self.next_departure_by_server[event.server_id])
 
