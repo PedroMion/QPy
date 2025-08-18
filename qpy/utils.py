@@ -8,6 +8,11 @@ from .job import Job
 from typing import Optional
 
 
+def _randomize_priority(priorities):
+  if priorities:
+    return randomly_draw_from_dictionary(priorities)
+  return 0
+
 def randomly_draw_from_dictionary(probabilities):
   probability = random.random()
   probability_sum = 0
@@ -17,11 +22,6 @@ def randomly_draw_from_dictionary(probabilities):
 
     if probability <= probability_sum:
         return possible_value
-
-def randomize_priority(priorities):
-  if priorities:
-    return randomly_draw_from_dictionary(priorities)
-  return 0
 
 def validade_priority_input(input, with_priority = True):
   if not input or not with_priority:
@@ -52,7 +52,7 @@ def generate_new_job_closed_network(queue: list, event_count: int, time: float, 
     think_time += think_time_distribution.sample()
     routing = randomly_draw_from_dictionary(routing_probabilities)
 
-  new_job = Job(event_count, time + think_time, routing, randomize_priority(priorities))
+  new_job = Job(event_count, time + think_time, routing, _randomize_priority(priorities))
 
   heapq.heappush(queue, (time + think_time, event_count, Event(time + think_time, event_count, 'arrival', new_job, routing)))
     
@@ -64,7 +64,7 @@ def generate_arrivals(queue: list, event_count: int, delta: float, server: int, 
       new_arrival_time = round((time + arrival_distribution.sample()), 4)
 
       if new_arrival_time < delta:
-          new_job = Job(event_count, new_arrival_time, server, randomize_priority(priorities))
+          new_job = Job(event_count, new_arrival_time, server, _randomize_priority(priorities))
           
           heapq.heappush(queue, (new_arrival_time, event_count, Event(new_arrival_time, event_count, 'arrival', new_job, server)))
 

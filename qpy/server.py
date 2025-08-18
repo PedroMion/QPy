@@ -14,12 +14,12 @@ class ServerExecution:
 
         self.reset_execution_configuration()
     
-    def reset_execution_configuration(self):
+    def _reset_execution_configuration(self):
         self.current_job_being_executed = None
         self.current_job_size = 0
         self.time_current_execution_started = 0
 
-    def execute_new_job(self, job: Job, size: float, time: float):
+    def _execute_new_job(self, job: Job, size: float, time: float):
         validate_object_params_not_none('execute_new_job', job=job)
         validate_number_params_not_negative_and_not_none(function_name='execute_new_job', size=size, time=time)
 
@@ -27,13 +27,24 @@ class ServerExecution:
         self.current_job_size = size
         self.time_current_execution_started = time
 
-    def remaining_time_for_current_job(self, time: float) -> float:
+    def _remaining_time_for_current_job(self, time: float) -> float:
         validate_number_params_not_negative_and_not_none(function_name='remaining_time_for_current_job', time=time)
 
         if time < self.time_current_execution_started:
             raise ValueError(f'Job can\'t have negative reimaining time.\nCurrent time: {time} | Time execution started: {self.time_current_execution_started}')
 
         return self.current_job_size - (time - self.time_current_execution_started)
+
+    def _should_preempt(self, new_job: Job, new_job_size: float, time: float):
+        validate_object_params_not_none('should_preempt', new_job=new_job)
+        validate_number_params_not_negative_and_not_none('should_preempt', new_job_size=new_job_size, time=time)
+
+        if self.queue.discipline == Discipline.SRT:
+            return new_job_size < self._remaining_time_for_current_job(time)
+        if self.queue.discipline == Discipline.PRIORITY:
+            return new_job.priority > self.current_job_being_executed.priority
+        
+        return False
 
     def is_next_event_departure(self) -> bool:
         if self.queue.discipline == Discipline.RR:
@@ -42,31 +53,20 @@ class ServerExecution:
         
         return True
 
-    def should_preempt(self, new_job: Job, new_job_size: float, time: float):
-        validate_object_params_not_none('should_preempt', new_job=new_job)
-        validate_number_params_not_negative_and_not_none('should_preempt', new_job_size=new_job_size, time=time)
-
-        if self.queue.discipline == Discipline.SRT:
-            return new_job_size < self.remaining_time_for_current_job(time)
-        if self.queue.discipline == Discipline.PRIORITY:
-            return new_job.priority > self.current_job_being_executed.priority
-        
-        return False
-
     def job_arrival(self, job: Job, time: float, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
         
         if self.current_job_being_executed == None:
-            self.execute_new_job(job, job_size, time)
+            self._execute_new_job(job, job_size, time)
 
             return job_size
         
         if self.queue.with_preemption() and (self.queue.discipline == Discipline.SRT or self.queue.discipline == Discipline.PRIORITY):
             if self.should_preempt(job, job_size, time):
-                self.queue.insert(self.current_job_being_executed, self.remaining_time_for_current_job(time))
+                self.queue.insert(self.current_job_being_executed, self._remaining_time_for_current_job(time))
                 event.canceled = True
 
-                self.execute_new_job(job, job_size, time)
+                self._execute_new_job(job, job_size, time)
 
                 return job_size
         
@@ -79,11 +79,11 @@ class ServerExecution:
             new_job_size = next_job_in_line[0]
             new_job = next_job_in_line[1]
 
-            self.execute_new_job(new_job, new_job_size, time)
+            self._execute_new_job(new_job, new_job_size, time)
 
             return next_job_in_line if self.is_next_event_departure() else (self.queue.preemption_time, new_job)
         
-        self.reset_execution_configuration()
+        self._reset_execution_configuration()
     
     def preempt(self, time: float) -> tuple:
         next_job = self.queue.first_in_line
@@ -92,15 +92,15 @@ class ServerExecution:
             new_job_size = next_job[0]
             new_job = next_job[1]
 
-            self.queue.insert(self.current_job_being_executed, self.remaining_time_for_current_job(time))
+            self.queue.insert(self.current_job_being_executed, self._remaining_time_for_current_job(time))
 
-            self.execute_new_job(new_job, new_job_size, time)
+            self._execute_new_job(new_job, new_job_size, time)
 
             return next_job if self.is_next_event_departure() else (self.queue.preemption_time, new_job)
 
-        self.execute_new_job(self.current_job_being_executed, self.remaining_time_for_current_job(time), time)
+        self._execute_new_job(self.current_job_being_executed, self._remaining_time_for_current_job(time), time)
 
-        return (self.remaining_time_for_current_job() if self.is_next_event_departure() else self.queue.preemption_time, self.current_job_being_executed)
+        return (self._remaining_time_for_current_job() if self.is_next_event_departure() else self.queue.preemption_time, self.current_job_being_executed)
 
 class Server:
     def __init__(self, id: int, service_distribution: IDistribution, queue: IQueue):

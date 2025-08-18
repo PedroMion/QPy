@@ -17,7 +17,7 @@ class Job:
         self.arrival_times_per_server[current_server].append(arrival_time)
         self.total_visits_per_server[current_server] += 1
 
-    def switch_servers_and_compute_state(self, time: float, server: int):
+    def _switch_servers_and_compute_state(self, time: float, server: int):
         validate_number_params_not_negative_and_not_none(function_name='switch_servers_and_compute_state', time=time, server=server)
 
         self.current_server = server
@@ -40,4 +40,4 @@ class Job:
         self.total_time_per_server[self.current_server] += completion_time - self.arrival_time_at_current_server
 
         if new_server:
-            self.switch_servers_and_compute_state(completion_time, new_server)
+            self._switch_servers_and_compute_state(completion_time, new_server)
