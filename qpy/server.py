@@ -12,7 +12,7 @@ class ServerExecution:
         self.service_distribution = service_distribution
         self.queue = queue
 
-        self.reset_execution_configuration()
+        self._reset_execution_configuration()
     
     def _reset_execution_configuration(self):
         self.current_job_being_executed = None
