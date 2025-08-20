@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from qpy.validation_utils import validate_number_params_not_negative_and_not_none
+
 
 class GeneralMetrics:
     def __init__(self, total_simulation_time):
@@ -20,6 +22,11 @@ class GeneralMetrics:
             self.current_number_of_jobs -= 1
 
     def compute_arrival(self, time):
+        validate_number_params_not_negative_and_not_none(function_name='compute_arrival', time=time)
+
+        if time < self.current_time:
+            raise ValueError('Provided time smaller than already registered time.')
+
         self._count_number_of_jobs(time, 'arrival')
 
     def get_number_of_processed_jobs(self):
