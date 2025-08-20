@@ -20,7 +20,7 @@ class ServerExecution:
         self.time_current_execution_started = 0
 
     def _execute_new_job(self, job: Job, size: float, time: float):
-        validate_object_params_not_none('execute_new_job', job=job)
+        validate_object_params_not_none(function_name='execute_new_job', job=job)
         validate_number_params_not_negative_and_not_none(function_name='execute_new_job', size=size, time=time)
 
         self.current_job_being_executed = job
@@ -36,7 +36,7 @@ class ServerExecution:
         return self.current_job_size - (time - self.time_current_execution_started)
 
     def _should_preempt(self, new_job: Job, new_job_size: float, time: float):
-        validate_object_params_not_none('should_preempt', new_job=new_job)
+        validate_object_params_not_none(function_name='should_preempt', new_job=new_job)
         validate_number_params_not_negative_and_not_none('should_preempt', new_job_size=new_job_size, time=time)
 
         if self.queue.discipline == Discipline.SRT:
