@@ -1,7 +1,9 @@
 import pytest
 
+
 from qpy.job import Job
 from qpy.metrics import ServerMetrics
+
 
 TOTAL_SIMULATION_TIME = 200
 SERVER_ID = 1
@@ -74,7 +76,7 @@ def test_compute_departure_when_time_is_smaller_than_current_time_should_raise_e
     with pytest.raises(ValueError):
         server_metrics_test_object_with_informations.compute_departure(time=ZERO_VALUE)
 
-"""time < 0"""
+"""time < 0 (Inválido)"""
 def test_compute_departure_when_time_is_negative_should_raise_exception(server_metrics_empty_test_object):
     with pytest.raises(ValueError):
         server_metrics_empty_test_object.compute_departure(time=NEGATIVE_VALUE)
@@ -117,11 +119,11 @@ Particionamento do espaço de entrada para função get_number_of_processed_jobs
     cumulative_visits_per_job: 0 | > 0
 """
 
-"""cumulative_visits_per_job = 0"""
+"""cumulative_visits_per_job = 0 (Válido)"""
 def test_get_number_of_processed_jobs_when_visits_werent_made_should_return_zero(server_metrics_empty_test_object):
     assert server_metrics_empty_test_object.get_number_of_processed_jobs() == 0
 
-"""cumulative_visits_per_job > 0"""
+"""cumulative_visits_per_job > 0 (Válido)"""
 def test_get_number_of_processed_jobs_when_visits_were_made_should_return_count(server_metrics_test_object_with_informations):
     assert server_metrics_test_object_with_informations.get_number_of_processed_jobs() == CUMULATIVE_VISITS_PER_JOB
 
@@ -131,11 +133,11 @@ Particionamento do espaço de entrada para função get_mean_time_in_server() da
     cumulative_visits_per_job: 0 | > 0
 """
 
-"""cumulative_visits_per_job = 0"""
+"""cumulative_visits_per_job = 0 (Válido)"""
 def test_get_mean_time_in_server_when_visits_werent_made_should_return_zero(server_metrics_empty_test_object):
     assert server_metrics_empty_test_object.get_mean_time_in_server() == 0
 
-"""cumulative_visits_per_job > 0"""
+"""cumulative_visits_per_job > 0 (Válido)"""
 def test_get_mean_time_in_server_when_visits_were_made_should_return_mean(server_metrics_test_object_with_informations):
     expected_mean = CUMULATIVE_TIME_IN_SERVER / CUMULATIVE_VISITS_PER_JOB
 
@@ -147,11 +149,11 @@ Particionamento do espaço de entrada para função get_mean_visits_per_job() da
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 
-"""total_number_of_processed_jobs_in_system = 0"""
+"""total_number_of_processed_jobs_in_system = 0 (Válido)"""
 def test_get_mean_visits_per_job_when_jobs_werent_processed_should_return_zero(server_metrics_empty_test_object):
     assert server_metrics_empty_test_object.get_mean_visits_per_job() == 0
 
-"""total_number_of_processed_jobs_in_system > 0"""
+"""total_number_of_processed_jobs_in_system > 0 (Válido)"""
 def test_get_mean_visits_per_job_when_jobs_processed_should_return_mean(server_metrics_test_object_with_informations):
     expected_mean = CUMULATIVE_VISITS_PER_JOB / NUMBER_OF_PROCESSED_JOBS
 
@@ -163,14 +165,14 @@ Particionamento do espaço de entrada para função get_server_utilization() da 
     total_simulation_time: 0 | > 0
 """
 
-"""total_simulation_time = 0"""
+"""total_simulation_time = 0 (Válido)"""
 def test_get_server_utilization_when_total_time_is_zero_should_return_zero():
     metrics = ServerMetrics(SERVER_ID, total_simulation_time=0)
     metrics.cumulative_server_busy_time = CUMULATIVE_SERVER_BUSY_TIME
 
     assert metrics.get_server_utilization() == 0
 
-"""total_simulation_time > 0"""
+"""total_simulation_time > 0 (Válido)"""
 def test_get_server_utilization_when_total_time_is_valid_should_return_utilization(server_metrics_test_object_with_informations):
     expected_utilization = CUMULATIVE_SERVER_BUSY_TIME / TOTAL_SIMULATION_TIME
 
@@ -182,14 +184,14 @@ Particionamento do espaço de entrada para função get_throughput() da classe S
     total_simulation_time: 0 | > 0
 """
 
-"""total_simulation_time = 0"""
+"""total_simulation_time = 0 (Válido)"""
 def test_get_throughput_when_total_time_is_zero_should_return_zero():
     metrics = ServerMetrics(SERVER_ID, total_simulation_time=0)
     metrics.cumulative_visits_per_job = CUMULATIVE_VISITS_PER_JOB
 
     assert metrics.get_throughput() == 0
 
-"""total_simulation_time > 0"""
+"""total_simulation_time > 0 (Válido)"""
 def test_get_throughput_when_total_time_is_valid_should_return_throughput(server_metrics_test_object_with_informations):
     expected_throughput = CUMULATIVE_VISITS_PER_JOB / TOTAL_SIMULATION_TIME
 
@@ -201,11 +203,11 @@ Particionamento do espaço de entrada para função get_demand() da classe Serve
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 
-"""total_number_of_processed_jobs_in_system = 0"""
+"""total_number_of_processed_jobs_in_system = 0 (Válido)"""
 def test_get_demand_when_no_jobs_were_processed_should_return_zero(server_metrics_empty_test_object):
     assert server_metrics_empty_test_object.get_demand() == 0
 
-"""total_number_of_processed_jobs_in_system > 0"""
+"""total_number_of_processed_jobs_in_system > 0 (Válido)"""
 def test_get_demand_when_jobs_were_processed_should_return_demand(server_metrics_test_object_with_informations):
     expected_demand = CUMULATIVE_TIME_IN_SERVER / NUMBER_OF_PROCESSED_JOBS
 

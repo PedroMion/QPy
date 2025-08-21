@@ -117,6 +117,12 @@ class PriorityMetrics(GeneralMetrics):
         return self.cumulative_time_in_system / self.total_number_of_processed_jobs_in_system if self.total_number_of_processed_jobs_in_system > 0 else 0
     
     def compute_departure(self, job: Job, time: float):
+        validate_number_params_not_negative_and_not_none(function_name='compute_departure', time=time)
+        validate_object_params_not_none(function_name='compute_departure', job=job)
+
+        if time < job.arrival_time:
+            raise ValueError('Provided time smaller than already registered time.')
+
         self.total_number_of_processed_jobs_in_system += 1
         self.cumulative_time_in_system += (time - job.arrival_time)
         self.cumulative_queue_times += sum(job.queue_times_per_server.values())
