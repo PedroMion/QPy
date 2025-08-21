@@ -36,7 +36,10 @@ class FirstComeFirstServed(IQueue):
         self.queue = deque()
         self.discipline = Discipline.FCFS
     
-    def insert(self, job: Job, service_time: float = None):
+    def insert(self, job: Job, service_time: float):
+        if job is None or service_time is None:
+            return
+        
         self.queue.append((service_time, job))
     
     def first_in_line(self) -> tuple:
@@ -53,7 +56,10 @@ class LastComeFirstServed(IQueue):
         self.queue = deque()
         self.discipline = Discipline.LCFS
     
-    def insert(self, job: Job, service_time: float = None):
+    def insert(self, job: Job, service_time: float):
+        if job is None or service_time is None:
+            return
+
         self.queue.append((service_time, job))
     
     def first_in_line(self) -> tuple:
@@ -72,6 +78,9 @@ class ShortestRemainingTime(IQueue):
         self.discipline = Discipline.SRT
     
     def insert(self, job: Job, service_time: float):
+        if job is None or service_time is None:
+            return
+        
         heapq.heappush(self.queue, (service_time, job))
     
     def first_in_line(self) -> tuple:
@@ -89,7 +98,10 @@ class RoundRobin(IQueue):
         self.preemption_time = preemption_time
         self.discipline = Discipline.RR
     
-    def insert(self, job: Job, service_time: float = None):
+    def insert(self, job: Job, service_time: float):
+        if job is None or service_time is None:
+            return
+        
         self.queue.append((service_time, job))
     
     def first_in_line(self) -> tuple:
@@ -108,6 +120,9 @@ class PriorityQueue(IQueue):
         self.discipline = Discipline.PRIORITY
 
     def insert(self, job: Job, service_time: float):
+        if job is None or service_time is None:
+            return
+        
         heapq.heappush(self.queue, (-job.priority, job.arrival_time_at_current_server, job, service_time))
     
     def first_in_line(self):

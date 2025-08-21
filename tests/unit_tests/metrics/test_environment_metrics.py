@@ -89,7 +89,7 @@ def test_compute_departure_when_job_is_none_should_raise_exception(environment_m
 
 
 """
-Particionamento do espaço de entrada para função get_mean_time_in_system() da classe EnvironmentMetrics:
+Particionamento do espaço de entrada para função get_mean_time_in_system() da classe EnvironmentMetrics utilizando Each Choice Coverage:
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 

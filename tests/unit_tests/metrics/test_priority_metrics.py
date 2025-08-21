@@ -40,7 +40,7 @@ def job_mock_object():
 
 
 """
-Particionamento do espaço de entrada para função compute_departure() da classe PriorityMetrics:
+Particionamento do espaço de entrada para função compute_departure() da classe PriorityMetrics utilizando Each Choice Coverage:
     job: Válido | None
     time: 0 | < 0 | > 0 | None
 """
@@ -83,7 +83,7 @@ def test_compute_departure_when_time_is_none_should_raise_exception(priority_met
 
 
 """
-Particionamento do espaço de entrada para função get_mean_time_in_system() da classe PriorityMetrics:
+Particionamento do espaço de entrada para função get_mean_time_in_system() da classe PriorityMetrics utilizando Each Choice Coverage:
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 

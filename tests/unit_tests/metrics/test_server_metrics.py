@@ -57,7 +57,7 @@ def job_mock_object():
 
 
 """
-Particionamento do espaço de entrada para função compute_departure() da classe ServerMetrics:
+Particionamento do espaço de entrada para função compute_departure() da classe ServerMetrics utilizando Each Choice Coverage:
     time: 0 | < 0 | > 0 | None
 """
 
@@ -88,7 +88,7 @@ def test_compute_departure_when_time_is_none_should_raise_exception(server_metri
 
 
 """
-Particionamento do espaço de entrada para função compute_environment_departure() da classe ServerMetrics:
+Particionamento do espaço de entrada para função compute_environment_departure() da classe ServerMetrics utilizando Each Choice Coverage:
     job: Válido | None
 """
 
@@ -115,7 +115,7 @@ def test_compute_environment_departure_when_job_is_none_should_raise_exception(s
 
 
 """
-Particionamento do espaço de entrada para função get_number_of_processed_jobs() da classe ServerMetrics:
+Particionamento do espaço de entrada para função get_number_of_processed_jobs() da classe ServerMetrics utilizando Each Choice Coverage:
     cumulative_visits_per_job: 0 | > 0
 """
 
@@ -129,7 +129,7 @@ def test_get_number_of_processed_jobs_when_visits_were_made_should_return_count(
 
 
 """
-Particionamento do espaço de entrada para função get_mean_time_in_server() da classe ServerMetrics:
+Particionamento do espaço de entrada para função get_mean_time_in_server() da classe ServerMetrics utilizando Each Choice Coverage:
     cumulative_visits_per_job: 0 | > 0
 """
 
@@ -145,7 +145,7 @@ def test_get_mean_time_in_server_when_visits_were_made_should_return_mean(server
 
 
 """
-Particionamento do espaço de entrada para função get_mean_visits_per_job() da classe ServerMetrics:
+Particionamento do espaço de entrada para função get_mean_visits_per_job() da classe ServerMetrics utilizando Each Choice Coverage:
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 
@@ -161,7 +161,7 @@ def test_get_mean_visits_per_job_when_jobs_processed_should_return_mean(server_m
 
 
 """
-Particionamento do espaço de entrada para função get_server_utilization() da classe ServerMetrics:
+Particionamento do espaço de entrada para função get_server_utilization() da classe ServerMetrics utilizando Each Choice Coverage:
     total_simulation_time: 0 | > 0
 """
 
@@ -180,7 +180,7 @@ def test_get_server_utilization_when_total_time_is_valid_should_return_utilizati
 
 
 """
-Particionamento do espaço de entrada para função get_throughput() da classe ServerMetrics:
+Particionamento do espaço de entrada para função get_throughput() da classe ServerMetrics utilizando Each Choice Coverage:
     total_simulation_time: 0 | > 0
 """
 
@@ -199,7 +199,7 @@ def test_get_throughput_when_total_time_is_valid_should_return_throughput(server
 
 
 """
-Particionamento do espaço de entrada para função get_demand() da classe ServerMetrics:
+Particionamento do espaço de entrada para função get_demand() da classe ServerMetrics utilizando Each Choice Coverage:
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 

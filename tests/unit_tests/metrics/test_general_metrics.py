@@ -63,7 +63,7 @@ def test_compute_arrival_when_new_time_smaller_than_current_time_should_raise_ex
 
 
 """
-Particionamento do espaço de entrada para função get_number_of_processed_jobs() da classe GeneralMetrics:
+Particionamento do espaço de entrada para função get_number_of_processed_jobs() da classe GeneralMetrics utilizando Each Choice Coverage:
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 
@@ -77,7 +77,7 @@ def test_get_number_of_processed_jobs_when_jobs_were_processed_should_return_cou
 
 
 """
-Particionamento do espaço de entrada para função get_mean_queue_time() da classe GeneralMetrics:
+Particionamento do espaço de entrada para função get_mean_queue_time() da classe GeneralMetrics utilizando Each Choice Coverage:
     total_number_of_processed_jobs_in_system: 0 | > 0
 """
 
@@ -93,7 +93,7 @@ def test_get_mean_queue_time_when_jobs_processed_should_return_mean(general_metr
 
 
 """
-Particionamento do espaço de entrada para função get_mean_number_of_jobs_in_system() da classe GeneralMetrics:
+Particionamento do espaço de entrada para função get_mean_number_of_jobs_in_system() da classe GeneralMetrics utilizando Each Choice Coverage:
     total_simulation_time: 0 | > 0
 """
 
@@ -112,7 +112,7 @@ def test_get_mean_number_of_jobs_in_system_when_total_time_is_valid_should_retur
 
 
 """
-Particionamento do espaço de entrada para função get_throughput() da classe GeneralMetrics:
+Particionamento do espaço de entrada para função get_throughput() da classe GeneralMetrics utilizando Each Choice Coverage:
     total_simulation_time: 0 | > 0
 """
 
