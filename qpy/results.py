@@ -43,7 +43,7 @@ class SimulationResults:
     
     def _compute_servers_departure(self, job, time):
         for server_id in range(len(self.server_metrics)):
-            self.server_metrics[server_id].compute_environment_departure(job, time)
+            self.server_metrics[server_id].compute_environment_departure(job)
 
     def compute_arrival(self, current_time, server_id):
         self.environment_metrics.compute_arrival(current_time)
