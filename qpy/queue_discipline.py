@@ -123,7 +123,7 @@ class PriorityQueue(IQueue):
         if job is None or service_time is None:
             return
         
-        heapq.heappush(self.queue, (-job.priority, job.arrival_time_at_current_server, job, service_time))
+        heapq.heappush(self.queue, (-job.priority, job.arrival_time_at_current_server, service_time, job))
     
     def first_in_line(self):
         try:
