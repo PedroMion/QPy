@@ -56,7 +56,7 @@ Particionamento do espaço de entrada para função insert() da classe ShortestR
 """job Válido | service_time Válido (Válido)"""
 def test_insert_when_both_objects_are_valid_should_update_queue(srt_empty_queue):
     expected_queue = []
-    heapq.heappush(expected_queue, (FIRST_JOB_SERVICE_TIME, FIRST_JOB))
+    heapq.heappush(expected_queue, (FIRST_JOB_SERVICE_TIME, FIRST_JOB.arrival_time_at_current_server, FIRST_JOB))
 
     srt_empty_queue.insert(job=FIRST_JOB, service_time=FIRST_JOB_SERVICE_TIME)
 

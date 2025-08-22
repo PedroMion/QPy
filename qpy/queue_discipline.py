@@ -81,11 +81,13 @@ class ShortestRemainingTime(IQueue):
         if job is None or service_time is None:
             return
         
-        heapq.heappush(self.queue, (service_time, job))
+        heapq.heappush(self.queue, (service_time, job.arrival_time_at_current_server, job))
     
     def first_in_line(self) -> tuple:
         try:
-            return heapq.heappop(self.queue)
+            queue_element = heapq.heappop(self.queue)
+
+            return (queue_element[0], queue_element[2])
         except:
             return
 
