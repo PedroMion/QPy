@@ -2,6 +2,7 @@ from .distribution import IDistribution
 from .server import Server
 from .queue_discipline import IQueue, QueueDiscipline
 from .utils import generate_arrivals, generate_new_job_closed_network, validade_priority_input
+from .validation_utils import validate_number_params_not_negative_and_not_none
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Optional
@@ -38,6 +39,8 @@ class BaseNetwork(INetwork):
         return server_id
 
     def add_servers_connection(self, origin_server_id: int, destination_server_id: int, routing_probability: float):
+        validate_number_params_not_negative_and_not_none(function_name='add_servers_connection', origin_server_id=origin_server_id, destination_server_id=destination_server_id, routing_probability=routing_probability)
+        
         number_of_servers = len(self.servers)
 
         if origin_server_id < number_of_servers and destination_server_id < number_of_servers:
@@ -45,6 +48,12 @@ class BaseNetwork(INetwork):
         
         else:
             raise ValueError(f'Provided server id is not valid. Received {origin_server_id if origin_server_id >= number_of_servers else destination_server_id} when only {number_of_servers} were created (Index starts at 0).')
+    
+    def generate_jobs(self, time_limit: float): 
+        return
+
+    def finish_job(self, event_queue: list, time: float):
+        return
 
 class OpenNetwork(BaseNetwork):
     def __init__(self):
