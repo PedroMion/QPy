@@ -2,7 +2,7 @@ from .distribution import IDistribution
 from .server import Server
 from .queue_discipline import IQueue, QueueDiscipline
 from .utils import generate_arrivals, generate_new_job_closed_network, validade_priority_input
-from .validation_utils import validate_number_params_not_negative_and_not_none
+from .validation_utils import validate_number_params_not_negative_and_not_none, validate_object_params_not_none
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Optional
@@ -63,6 +63,9 @@ class OpenNetwork(BaseNetwork):
         super().__init__()
 
     def add_entry_point(self, server_id: int, arrival_distribution: IDistribution, priority_distribution: Optional[dict] = None):
+        validate_number_params_not_negative_and_not_none(function_name='add_entry_point', server_id=server_id)
+        validate_object_params_not_none(function_name='add_entry_point', arrival_distribution=arrival_distribution)
+        
         if server_id >= 0 and server_id < len(self.servers):
             self.arrivals[server_id].append(arrival_distribution)
 
@@ -74,6 +77,8 @@ class OpenNetwork(BaseNetwork):
         raise ValueError("The provided server id is not valid.")
 
     def generate_jobs(self, time_limit: float) -> list: 
+        validate_number_params_not_negative_and_not_none(function_name='generate_jobs', time_limit=time_limit)
+        
         event_queue = []
         event_count = 0
 
