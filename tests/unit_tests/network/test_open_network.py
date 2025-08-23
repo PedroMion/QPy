@@ -1,5 +1,4 @@
 import pytest
-from collections import defaultdict
 
 from qpy.network import OpenNetwork
 from qpy.distribution import Distribution
@@ -73,13 +72,13 @@ Particionamento do espaço de entrada para função generate_jobs() da classe Op
     time_limit: < 0 | 0 | > 0
 """
 
-"""arrivals Vazio | time_limit > 0"""
+"""arrivals Vazio | time_limit > 0 (Válido)"""
 def test_generate_jobs_when_no_arrivals_were_configured_should_return_empty_list(open_network_with_servers):
     jobs = open_network_with_servers.generate_jobs(time_limit=TIME_LIMIT)
 
     assert jobs == []
 
-"""arrivals Não vazio | time_limit > 0"""
+"""arrivals Não vazio | time_limit > 0 (Válido)"""
 def test_generate_jobs_when_arrivals_exist_should_generate_jobs(open_network_with_servers):
     open_network_with_servers.add_entry_point(VALID_SERVER_ID, arrival_distribution=MOCK_DISTRIBUTION)
 
@@ -87,7 +86,7 @@ def test_generate_jobs_when_arrivals_exist_should_generate_jobs(open_network_wit
 
     assert len(jobs) > 0
 
-"""arrivals Não vazio | time_limit = 0"""
+"""arrivals Não vazio | time_limit = 0 (Válido)"""
 def test_generate_jobs_when_time_limit_is_zero_should_return_empty(open_network_with_servers):
     open_network_with_servers.add_entry_point(VALID_SERVER_ID, arrival_distribution=MOCK_DISTRIBUTION)
 
@@ -95,7 +94,7 @@ def test_generate_jobs_when_time_limit_is_zero_should_return_empty(open_network_
 
     assert jobs == []
 
-"""arrivals Não vazio | time_limit < 0"""
+"""arrivals Não vazio | time_limit < 0 (Inválido)"""
 def test_generate_jobs_when_time_limit_is_negative_should_raise_exception(open_network_with_servers):
     open_network_with_servers.add_entry_point(VALID_SERVER_ID, arrival_distribution=MOCK_DISTRIBUTION)
 

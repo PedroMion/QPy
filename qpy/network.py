@@ -107,8 +107,7 @@ class ClosedNetwork(BaseNetwork):
         self.entry_point_routing['end'] = 1
 
     def add_priorities(self, priorities: dict):
-        if validade_priority_input(priorities):
-            self.priorities = priorities
+        self.priorities = validade_priority_input(priorities)
 
     def add_terminals_routing_probability(self, destination_server_id: int, probability: float):
         end_probability = self.entry_point_routing["end"]
