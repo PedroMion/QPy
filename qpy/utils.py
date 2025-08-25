@@ -5,6 +5,7 @@ import heapq
 from .distribution import IDistribution
 from .event import Event
 from .job import Job
+from collections import defaultdict
 from typing import Optional
 
 
@@ -22,6 +23,16 @@ def randomly_draw_from_dictionary(probabilities):
 
     if probability <= probability_sum:
         return possible_value
+
+def transform_input_closed_network(input):
+  margin = 1 - input['end']
+
+  new_dict = defaultdict(lambda: 0)
+  for key in input.keys():
+    if key != 'end':
+      new_dict[key] = round(input[key] / margin, 4)
+
+  return new_dict
 
 def validade_priority_input(input, with_priority = True):
   if not input or not with_priority:
@@ -41,7 +52,7 @@ def validade_priority_input(input, with_priority = True):
     
     return input
   except:
-    raise ValueError("Wrong priority distribution. Input has to be dictionary containing integer (priority) as keys and double (probability) as value. Lower piorities will be executed first.")
+    raise ValueError("Wrong priority distribution. Input has to be dictionary containing integer (priority) as keys and double (probability) as value. Higher piorities will be executed first.")
 
 
 def generate_new_job_closed_network(queue: list, event_count: int, time: float, think_time_distribution: IDistribution, routing_probabilities: dict, priorities: Optional[dict] = None):
