@@ -1,2 +1,4 @@
 def value_within_range(expected: float, actual: float, delta: float):
-    return (actual >= expected - delta) and (actual <= expected + delta)
+    margin = delta * expected
+
+    return (actual >= expected - margin) and (actual <= expected + margin)
