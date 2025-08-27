@@ -1,5 +1,6 @@
 from collections import defaultdict
 from .metrics import EnvironmentMetrics, PriorityMetrics, ServerMetrics
+from .validation_utils import validate_number_params_not_negative_and_not_none, validate_object_params_not_none
 
 
 class EnvironmentResults:
@@ -30,6 +31,7 @@ class PriorityResults:
         self.mean_time_in_system = mean_time_in_system
         self.mean_queue_time = mean_queue_time
 
+
 class SimulationResults:
     def __init__(self, number_of_servers, total_simulation_time, time_unit):
         self.environment_metrics = EnvironmentMetrics(total_simulation_time)
@@ -46,16 +48,23 @@ class SimulationResults:
             self.server_metrics[server_id].compute_environment_departure(job)
 
     def compute_arrival(self, current_time, server_id):
+        validate_number_params_not_negative_and_not_none(function_name='compute_arrival', current_time=current_time, server_id=server_id)
+
         self.environment_metrics.compute_arrival(current_time)
         self.server_metrics[server_id].compute_arrival(current_time)
 
     def reroute(self, current_time, origin_server, destination_server):
+        validate_number_params_not_negative_and_not_none(function_name='reroute', current_time=current_time, origin_server=origin_server)
+
         self.server_metrics[origin_server].compute_departure(current_time)
 
         if destination_server:
             self.server_metrics[destination_server].compute_arrival(current_time)
 
     def compute_departure(self, job, current_time):
+        validate_number_params_not_negative_and_not_none(function_name='compute_departure', current_time=current_time)
+        validate_object_params_not_none(function_name='compute_departure', job=job)
+
         self._add_job_to_result(job)
         self.environment_metrics.compute_departure(job, current_time)
         self.priority_metrics[job.priority].compute_departure(job, current_time)
