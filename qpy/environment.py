@@ -3,7 +3,7 @@ from .execution import Execution
 from .network import ClosedNetwork, OpenNetwork
 from .queue_discipline import IQueue
 from .results import SimulationResults
-from .utils import validade_priority_input
+from .utils import validate_priority_input
 from typing import Optional
 from pydantic import validate_call
 
@@ -77,7 +77,7 @@ class Environment():
             If the network is closed, entry points are not allowed.
         """
         if not self.is_closed:
-            self.network.add_entry_point(server_id, arrival_distribution, validade_priority_input(priority_distribution))
+            self.network.add_entry_point(server_id, arrival_distribution, validate_priority_input(priority_distribution))
         else:
             raise ValueError('Closed network does not allow entry points')
 

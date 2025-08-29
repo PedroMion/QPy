@@ -98,11 +98,16 @@ def test_generate_jobs_when_there_are_no_terminals_should_return_nothing():
     expected_result = []
     mock_network = ClosedNetwork(think_time_distribution=MOCK_DISTRIBUTION, number_of_terminals=ZERO_VALUE)
 
+    mock_network.add_server(service_distribution=MOCK_DISTRIBUTION)
+    mock_network.add_terminals_routing_probability(destination_server_id=ZERO_VALUE, probability=0.5)
+
     assert mock_network.generate_jobs() == expected_result
 
 """number_of_terminals > 0"""
 def test_generate_jobs_when_there_are_terminals_should_return_jobs(closed_network_with_servers):
     expected_number_of_jobs = NUMBER_OF_TERMINALS
+
+    closed_network_with_servers.add_terminals_routing_probability(destination_server_id=ZERO_VALUE, probability=0.5)
 
     generated_jobs = closed_network_with_servers.generate_jobs()
 

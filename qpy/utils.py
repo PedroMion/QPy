@@ -5,6 +5,7 @@ import heapq
 from .distribution import IDistribution
 from .event import Event
 from .job import Job
+from .validation_utils import validate_object_params_not_none
 from collections import defaultdict
 from typing import Optional
 
@@ -15,6 +16,8 @@ def _randomize_priority(priorities):
   return 0
 
 def randomly_draw_from_dictionary(probabilities):
+  validate_object_params_not_none(function_name='randomly_draw_from_dictionary', probabilities=probabilities)
+
   probability = random.random()
   probability_sum = 0
 
@@ -25,6 +28,14 @@ def randomly_draw_from_dictionary(probabilities):
         return possible_value
 
 def transform_input_closed_network(input):
+  validate_object_params_not_none(function_name='transform_input_closed_network', input=input)
+
+  if 'end' not in input:
+    return input
+  
+  if input['end'] == 1:
+    raise ValueError('Closed network need to have at least one route from terminals')
+
   margin = 1 - input['end']
 
   new_dict = defaultdict(lambda: 0)
@@ -34,7 +45,7 @@ def transform_input_closed_network(input):
 
   return new_dict
 
-def validade_priority_input(input, with_priority = True):
+def validate_priority_input(input, with_priority = True):
   if not input or not with_priority:
     return
 

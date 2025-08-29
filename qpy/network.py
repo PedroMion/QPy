@@ -1,7 +1,7 @@
 from .distribution import IDistribution
 from .server import Server
 from .queue_discipline import IQueue, QueueDiscipline
-from .utils import generate_arrivals, generate_new_job_closed_network, transform_input_closed_network, validade_priority_input
+from .utils import generate_arrivals, generate_new_job_closed_network, transform_input_closed_network, validate_priority_input
 from .validation_utils import validate_number_params_not_negative_and_not_none, validate_object_params_not_none
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -107,7 +107,7 @@ class ClosedNetwork(BaseNetwork):
         self.entry_point_routing['end'] = 1
 
     def add_priorities(self, priorities: dict):
-        self.priorities = validade_priority_input(priorities)
+        self.priorities = validate_priority_input(priorities)
 
     def add_terminals_routing_probability(self, destination_server_id: int, probability: float):
         validate_number_params_not_negative_and_not_none(function_name='add_terminals_routing_probability', destination_server_id=destination_server_id, probability=probability)
