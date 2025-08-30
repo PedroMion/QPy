@@ -24,16 +24,16 @@ class Environment():
         
         time_unit : str - Optional
             The unit of time used for reporting results. Default is 'seconds'.
-        """
-        self.network = None
-        self.is_closed = False
-        self.time_unit = time_unit    
+        """        
+        self._network = None
+        self._is_closed = False
+        self._time_unit = time_unit    
         
-        if number_of_terminals is None or think_time_distribution is None:
-            self.network = OpenNetwork()
+        if number_of_terminals is None or think_time_distribution is None or number_of_terminals <= 0:
+            self._network = OpenNetwork()
         else:
-            self.network = ClosedNetwork(think_time_distribution, number_of_terminals)
-            self.is_closed = True
+            self._network = ClosedNetwork(think_time_distribution, number_of_terminals)
+            self._is_closed = True
     
     @validate_call(config=dict(arbitrary_types_allowed=True))
     def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None) -> int:
@@ -53,7 +53,7 @@ class Environment():
         int
             The server ID you must use to add entry points and/or connections to other servers, starting with 0.
         """
-        return self.network.add_server(service_distribution, queue_discipline)
+        return self._network.add_server(service_distribution, queue_discipline)
     
     @validate_call(config=dict(arbitrary_types_allowed=True))
     def add_entry_point(self, server_id: int, arrival_distribution: IDistribution, priority_distribution: Optional[dict] = None):
@@ -76,8 +76,8 @@ class Environment():
         ValueError
             If the network is closed, entry points are not allowed.
         """
-        if not self.is_closed:
-            self.network.add_entry_point(server_id, arrival_distribution, validate_priority_input(priority_distribution))
+        if not self._is_closed:
+            self._network.add_entry_point(server_id, arrival_distribution, validate_priority_input(priority_distribution))
         else:
             raise ValueError('Closed network does not allow entry points')
 
@@ -97,7 +97,7 @@ class Environment():
         routing_probability : float - Required
             The probability of routing a job from the origin to the destination server.
         """
-        self.network.add_servers_connection(origin_server_id, destination_server_id, routing_probability)
+        self._network.add_servers_connection(origin_server_id, destination_server_id, routing_probability)
     
     @validate_call
     def add_priority_closed_network(self, priorities: dict):
@@ -114,8 +114,8 @@ class Environment():
         ValueError
             If the network is not closed, this function can't be used.
         """
-        if self.is_closed:
-            self.network.add_priorities(priorities)
+        if self._is_closed:
+            self._network.add_priorities(priorities)
         else:
             raise ValueError('Open networks can\'t have priority without an entry point')
     
@@ -137,8 +137,8 @@ class Environment():
         ValueError
             If the network is open, terminal routing is not allowed.
         """
-        if self.is_closed:
-            self.network.add_terminals_routing_probability(destination_server_id, probability)
+        if self._is_closed:
+            self._network.add_terminals_routing_probability(destination_server_id, probability)
         else:
             raise ValueError('Open network does not allow terminal routing')
     
@@ -160,8 +160,8 @@ class Environment():
         SimulationResults
             An object containing the metrics and results from the simulation.
         """
-        queue = self.network.generate_jobs(time_in_seconds + warmup_time)
+        queue = self._network.generate_jobs(time_in_seconds + warmup_time)
 
-        new_execution = Execution(time_in_seconds, warmup_time, queue, self.network, self.time_unit)
+        new_execution = Execution(time_in_seconds, warmup_time, queue, self._network, self._time_unit)
 
         return new_execution.execute()

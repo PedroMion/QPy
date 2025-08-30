@@ -12,33 +12,33 @@ class IDistribution(ABC):
 
 class ConstantDistribution(IDistribution):
     def __init__(self, value: float):
-        self.value = value
+        self._value = value
     
     def sample(self) -> float:
-        return self.value
+        return self._value
 
 class ExponentialDistribution(IDistribution):
     def __init__(self, lambda_value: float):
-        self.lambda_value = lambda_value
+        self._lambda_value = lambda_value
     
     def sample(self) -> float:
-        return -np.log(1-random.random())/self.lambda_value
+        return -np.log(1-random.random())/self._lambda_value
 
 class UniformDistribution(IDistribution):
     def __init__(self, lower_bound: float, upper_bound: float):
-        self.lower_bound = lower_bound
-        self.upper_bound = upper_bound
+        self._lower_bound = lower_bound
+        self._upper_bound = upper_bound
     
     def sample(self) -> float:
-        return random.uniform(self.lower_bound, self.upper_bound)
+        return random.uniform(self._lower_bound, self._upper_bound)
     
 class NormalDistribution(IDistribution):
     def __init__(self, mu: float, sigma: float):
-        self.mu = mu
-        self.sigma = sigma
+        self._mu = mu
+        self._sigma = sigma
     
     def sample(self) -> float:
-        return random.gauss(self.mu, self.sigma)
+        return random.gauss(self._mu, self._sigma)
     
 class Distribution():
     def __new__(cls, *args, **kwargs):

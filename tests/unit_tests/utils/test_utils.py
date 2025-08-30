@@ -28,7 +28,7 @@ def empty_queue():
 
 
 """
-Particionamento do espaço de entrada para função randomly_draw_from_dictionary:
+Particionamento do espaço de entrada para função randomly_draw_from_dictionary():
     probabilities: Válido | Vazio | None
 """
 
@@ -63,7 +63,7 @@ def test_randomly_draw_from_dictionary_when_parameter_is_none_should_raise_excep
 
 
 """
-Particionamento do espaço de entrada para função transform_input_closed_network:
+Particionamento do espaço de entrada para função transform_input_closed_network():
     input: Somente com 'end' | Contém 'end' | Não contém 'end' | None
 """
 
@@ -107,7 +107,7 @@ def test_transform_input_closed_network_when_input_is_none_should_raise_exceptio
 
 
 """
-Particionamento do espaço de entrada para função validate_priority_input:
+Particionamento do espaço de entrada para função validate_priority_input():
     input: None | Válido (soma = 1) | Válido (soma != 1) | Inválido (elementos não numéricos) | Inválido (prioridade negativa)
     with_priority: True | False
 """

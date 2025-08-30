@@ -60,7 +60,7 @@ def test_insert_when_both_objects_are_valid_should_update_queue(srt_empty_queue)
 
     srt_empty_queue.insert(job=FIRST_JOB, service_time=FIRST_JOB_SERVICE_TIME)
 
-    assert srt_empty_queue.queue == expected_queue
+    assert srt_empty_queue._queue == expected_queue
 
 """job Inválido | service_time Válido (Inválido)"""
 def test_insert_when_job_is_invalid_should_not_update_queue(srt_empty_queue):
@@ -68,7 +68,7 @@ def test_insert_when_job_is_invalid_should_not_update_queue(srt_empty_queue):
 
     srt_empty_queue.insert(job=None, service_time=FIRST_JOB_SERVICE_TIME)
 
-    assert srt_empty_queue.queue == expected_queue
+    assert srt_empty_queue._queue == expected_queue
 
 """job Válido | service_time Inválido (Inválido)"""
 def test_insert_when_service_time_is_invalid_should_not_update_queue(srt_empty_queue):
@@ -76,7 +76,7 @@ def test_insert_when_service_time_is_invalid_should_not_update_queue(srt_empty_q
 
     srt_empty_queue.insert(job=FIRST_JOB, service_time=None)
 
-    assert srt_empty_queue.queue == expected_queue
+    assert srt_empty_queue._queue == expected_queue
 
 
 """

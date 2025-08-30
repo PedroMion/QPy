@@ -33,18 +33,18 @@ class IQueue(ABC):
 
 class FirstComeFirstServed(IQueue):
     def __init__(self):
-        self.queue = deque()
+        self._queue = deque()
         self.discipline = Discipline.FCFS
     
     def insert(self, job: Job, service_time: float):
         if job is None or service_time is None:
             return
         
-        self.queue.append((service_time, job))
+        self._queue.append((service_time, job))
     
     def first_in_line(self) -> tuple:
         try:
-            return self.queue.popleft()
+            return self._queue.popleft()
         except:
             return
     
@@ -53,18 +53,18 @@ class FirstComeFirstServed(IQueue):
 
 class LastComeFirstServed(IQueue):
     def __init__(self):
-        self.queue = deque()
+        self._queue = deque()
         self.discipline = Discipline.LCFS
     
     def insert(self, job: Job, service_time: float):
         if job is None or service_time is None:
             return
 
-        self.queue.append((service_time, job))
+        self._queue.append((service_time, job))
     
     def first_in_line(self) -> tuple:
         try:
-            return self.queue.pop()
+            return self._queue.pop()
         except:
             return
 
@@ -73,42 +73,42 @@ class LastComeFirstServed(IQueue):
 
 class ShortestRemainingTime(IQueue):
     def __init__(self, with_preemption: bool = False):
-        self.queue = []
-        self.preemption = with_preemption
+        self._queue = []
+        self._preemption = with_preemption
         self.discipline = Discipline.SRT
     
     def insert(self, job: Job, service_time: float):
         if job is None or service_time is None:
             return
         
-        heapq.heappush(self.queue, (service_time, job.arrival_time_at_current_server, job))
+        heapq.heappush(self._queue, (service_time, job.arrival_time_at_current_server, job))
     
     def first_in_line(self) -> tuple:
         try:
-            queue_element = heapq.heappop(self.queue)
+            queue_element = heapq.heappop(self._queue)
 
             return (queue_element[0], queue_element[2])
         except:
             return
 
     def with_preemption(self):
-        return self.preemption
+        return self._preemption
 
 class RoundRobin(IQueue):
     def __init__(self, preemption_time: float):
-        self.queue = deque()
-        self.preemption_time = preemption_time
+        self._queue = deque()
+        self._preemption_time = preemption_time
         self.discipline = Discipline.RR
     
     def insert(self, job: Job, service_time: float):
         if job is None or service_time is None:
             return
         
-        self.queue.append((service_time, job))
+        self._queue.append((service_time, job))
     
     def first_in_line(self) -> tuple:
         try:
-            return self.queue.popleft()
+            return self._queue.popleft()
         except:
             return
     
@@ -117,26 +117,26 @@ class RoundRobin(IQueue):
 
 class PriorityQueue(IQueue):
     def __init__(self, with_preemption: bool = False):
-        self.queue = []
-        self.preemption = with_preemption
+        self._queue = []
+        self._preemption = with_preemption
         self.discipline = Discipline.PRIORITY
 
     def insert(self, job: Job, service_time: float):
         if job is None or service_time is None:
             return
         
-        heapq.heappush(self.queue, (-job.priority, job.arrival_time_at_current_server, service_time, job))
+        heapq.heappush(self._queue, (-job.priority, job.arrival_time_at_current_server, service_time, job))
     
     def first_in_line(self):
         try:
-            queue_element = heapq.heappop(self.queue)
+            queue_element = heapq.heappop(self._queue)
 
             return (queue_element[2], queue_element[3])
         except:
             return
     
     def with_preemption(self):
-        return self.preemption
+        return self._preemption
 
 class QueueDiscipline():
     def __new__(cls, *args, **kwargs):
