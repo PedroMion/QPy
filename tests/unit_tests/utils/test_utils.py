@@ -8,8 +8,6 @@ from qpy.utils import (
     randomly_draw_from_dictionary,
     transform_input_closed_network,
     validate_priority_input,
-    generate_new_job_closed_network,
-    generate_arrivals
 )
 
 
