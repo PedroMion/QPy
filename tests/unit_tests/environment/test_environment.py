@@ -15,7 +15,7 @@ STRING_OBJECT = "teste"
 
 
 """
-Particionamento do espaço de entrada para a função __init__() da classe Environment
+Particionamento do espaço de entrada para a função __init__() da classe Environment utilizando Each Choice Coverage
     number_of_terminals: <= 0 | > 0 | None | Inválido
     think_time_distribution: None | Válido | Inválido
 """

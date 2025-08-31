@@ -30,7 +30,7 @@ def job_mock_object():
 
 
 """
-Particionamento do espaço de entrada para função compute_departure() da classe SimulationResults:
+Particionamento do espaço de entrada para função compute_departure() da classe SimulationResults utilizando Each Choice Coverage:
     job: Válido | None
     current_time: < 0 | >= 0
 """

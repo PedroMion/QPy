@@ -28,7 +28,7 @@ def open_network_with_servers():
 
 
 """
-Particionamento do espaço de entrada para função add_entry_point() da classe OpenNetwork:
+Particionamento do espaço de entrada para função add_entry_point() da classe OpenNetwork utilizando Each Choice Coverage:
     server_id: < 0 | >= 0 Válido | >= 0 Inválido
     arrival_distribution: None | Válido
     priority_distribution: None | Válido
@@ -67,7 +67,7 @@ def test_add_entry_point_when_server_id_is_negative_should_raise_exception(open_
 
 
 """
-Particionamento do espaço de entrada para função generate_jobs() da classe OpenNetwork:
+Particionamento do espaço de entrada para função generate_jobs() da classe OpenNetwork utilizando Each Choice Coverage:
     arrivals: Vazio | Não vazio
     time_limit: < 0 | 0 | > 0
 """

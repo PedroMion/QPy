@@ -32,7 +32,7 @@ def closed_network_with_servers():
 
 
 """
-Particionamento do espaço de entrada para função add_priorities() da classe ClosedNetwork:
+Particionamento do espaço de entrada para função add_priorities() da classe ClosedNetwork utilizando Each Choice Coverage:
     priorities: Válido | Inválido
 """
 
@@ -55,7 +55,7 @@ def test_add_priorities_when_input_is_invalid_should_raise_exception(closed_netw
 
 
 """
-Particionamento do espaço de entrada para função add_terminals_routing_probability() da classe ClosedNetwork:
+Particionamento do espaço de entrada para função add_terminals_routing_probability() da classe ClosedNetwork utilizando Each Choice Coverage:
     destination_server_id: < 0 | >= 0
     probability: < 0 | >= 0
 """
@@ -89,7 +89,7 @@ def test_add_terminals_routing_probability_when_probability_is_negative_should_r
 
 
 """
-Particionamento do espaço de entrada para função generate_jobs() da classe ClosedNetwork:
+Particionamento do espaço de entrada para função generate_jobs() da classe ClosedNetwork utilizando Each Choice Coverage:
     number_of_terminals: 0 | > 0
 """
 

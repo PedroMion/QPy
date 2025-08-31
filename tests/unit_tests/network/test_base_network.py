@@ -31,7 +31,7 @@ def base_network_with_servers():
 
 
 """
-Particionamento do espaço de entrada para função add_server() da classe BaseNetwork:
+Particionamento do espaço de entrada para função add_server() da classe BaseNetwork utilizando Each Choice Coverage:
     queue_discipline: None | Válido
 """
 
@@ -53,7 +53,7 @@ def test_add_server_when_queue_discipline_is_provided_should_use_it(base_network
 
 
 """
-Particionamento do espaço de entrada para função add_servers_connection() da classe BaseNetwork:
+Particionamento do espaço de entrada para função add_servers_connection() da classe BaseNetwork utilizando Each Choice Coverage:
     origin_server_id: < 0 | >= 0
     destination_server_id: < 0 | >= 0
     routing_probability: < 0 | 0 | > 0

@@ -15,7 +15,7 @@ NEGATIVE_VALUE = -5
 
 
 """
-Particionamento do espaço de entrada para função validate_number_params_not_negative():
+Particionamento do espaço de entrada para função validate_number_params_not_negative() utilizando Each Choice Coverage:
     value: None | < 0 | = 0 | > 0 | NaN
 """
 
@@ -43,7 +43,7 @@ def test_validate_number_params_not_negative_when_value_is_invalid_type_should_r
 
 
 """
-Particionamento do espaço de entrada para função validate_object_params_not_none():
+Particionamento do espaço de entrada para função validate_object_params_not_none() utilizando Each Choice Coverage:
     value: None | Válido
 """
 
@@ -58,7 +58,7 @@ def test_validate_object_params_not_none_when_value_is_valid_should_not_raise_ex
 
 
 """
-Particionamento do espaço de entrada para função validate_number_params_not_negative_and_not_none():
+Particionamento do espaço de entrada para função validate_number_params_not_negative_and_not_none() utilizando Each Choice Coverage:
     value: None | < 0 | = 0 | > 0 | NaN
 """
 
