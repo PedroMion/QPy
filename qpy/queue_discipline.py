@@ -97,7 +97,7 @@ class ShortestRemainingTime(IQueue):
 class RoundRobin(IQueue):
     def __init__(self, preemption_time: float):
         self._queue = deque()
-        self._preemption_time = preemption_time
+        self.preemption_time = preemption_time
         self.discipline = Discipline.RR
     
     def insert(self, job: Job, service_time: float):

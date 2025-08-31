@@ -62,7 +62,7 @@ class ServerExecution:
             return job_size
         
         if self.queue.with_preemption() and (self.queue.discipline == Discipline.SRT or self.queue.discipline == Discipline.PRIORITY):
-            if self.should_preempt(job, job_size, time):
+            if self._should_preempt(job, job_size, time):
                 self.queue.insert(self.current_job_being_executed, self._remaining_time_for_current_job(time))
                 event.canceled = True
 
