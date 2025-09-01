@@ -135,5 +135,5 @@ def test_is_next_event_departure_when_queue_discipline_is_rr_and_next_event_is_p
 """queue_discipline = Outra (Válido)"""
 def test_is_next_event_departure_when_queue_discipline_is_not_rr_should_return_true(fcfs_test_object):
     fcfs_test_object._execute_new_job(MOCK_JOB, JOB_SIZE, CURRENT_TIME)
-    
+
     assert fcfs_test_object.is_next_event_departure() is True

@@ -110,6 +110,8 @@ class Server:
         self.job_count = 0
     
     def add_destination(self, destination_server_id: int, probability: float):
+        validate_number_params_not_negative_and_not_none(function_name='add_destination', destination_server_id=destination_server_id, probability=probability)
+        
         end_probability = self.destinations["end"]
 
         if probability > end_probability:
