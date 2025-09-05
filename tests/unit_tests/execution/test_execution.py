@@ -23,6 +23,7 @@ MOCK_DISTRIBUTION = Distribution.constant(value=CONSTANT_DISTRIBUTION_VALUE)
 SERVER_ID = 0
 DESTINATION_SERVER_ID = 1
 JOB_SERVICE_TIME = 2
+JOB_ARRIVAL_TIME = 1
 MOCK_NEW_JOB_BEING_EXECUTED = (JOB_SERVICE_TIME, MagicMock())
 
 
@@ -112,19 +113,19 @@ Particionamento do espaço de entrada para função _add_next_departure_event() 
 
 """event = 'departure' (Válido)"""
 def test_add_next_departure_event_when_event_is_departure_should_serve_job(mock_execution_object, mock_event):
-    mock_execution_object._add_next_departure_event(SERVER_ID, mock_event.job, VALID_TIME, JOB_SERVICE_TIME, event='departure')
+    mock_execution_object._add_next_departure_event(SERVER_ID, mock_event.job, VALID_TIME, JOB_SERVICE_TIME, event_type='departure')
 
     assert mock_execution_object.event_count == EVENT_COUNT + 1
     assert len(mock_execution_object.event_queue) == 1
     mock_event.job.serve.assert_called_once_with(VALID_TIME)
 
 """event = 'preemption' (Válido)"""
-def test_add_next_departure_event_when_event_is_preemption_should_not_serve_job(mock_execution_object, mock_event):
-    mock_execution_object._add_next_departure_event(SERVER_ID, mock_event.job, VALID_TIME, JOB_SERVICE_TIME, event='preemption')
+def test_add_next_departure_event_when_event_is_preemption_should_serve_job(mock_execution_object, mock_event):
+    mock_execution_object._add_next_departure_event(SERVER_ID, mock_event.job, VALID_TIME, JOB_SERVICE_TIME, event_type='preemption')
 
     assert mock_execution_object.event_count == EVENT_COUNT + 1
     assert len(mock_execution_object.event_queue) == 1
-    mock_event.job.serve.assert_not_called()
+    mock_event.job.serve.assert_called_once_with(VALID_TIME)
 
 
 """
@@ -165,6 +166,7 @@ Particionamento do espaço de entrada para função _case_event_is_arrival() da 
 def test_case_event_is_arrival_when_job_is_not_being_executed_should_not_add_departure_event(mock_execution_object, mock_event):
     mock_event.server.job_arrival = MagicMock()
     mock_event.server.job_arrival.return_value = None
+    mock_event.job.arrival_time = JOB_ARRIVAL_TIME
 
     mock_execution_object._add_next_departure_event = MagicMock()
 
@@ -177,6 +179,7 @@ def test_case_event_is_arrival_when_job_is_not_being_executed_should_not_add_dep
 def test_case_event_is_arrival_when_job_is_being_executed_should_add_departure_event(mock_execution_object, mock_event):
     mock_event.server.job_arrival = MagicMock()
     mock_event.server.job_arrival.return_value = JOB_SERVICE_TIME
+    mock_event.job.arrival_time = JOB_ARRIVAL_TIME
 
     mock_execution_object._add_next_departure_event = MagicMock()
 
