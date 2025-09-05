@@ -88,7 +88,7 @@ class ServerExecution:
         self._reset_execution_configuration()
     
     def preempt(self, time: float) -> tuple:
-        next_job = self.queue.first_in_line
+        next_job = self.queue.first_in_line()
 
         if next_job:
             new_job_size = next_job[0]
@@ -102,7 +102,7 @@ class ServerExecution:
 
         self._execute_new_job(self.current_job_being_executed, self._remaining_time_for_current_job(time), time)
 
-        return (self._remaining_time_for_current_job() if self.is_next_event_departure() else self.queue.preemption_time, self.current_job_being_executed)
+        return (self._remaining_time_for_current_job(time) if self.is_next_event_departure() else self.queue.preemption_time, self.current_job_being_executed)
 
 class Server:
     def __init__(self, id: int, service_distribution: IDistribution, queue: IQueue):
