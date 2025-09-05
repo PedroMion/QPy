@@ -21,6 +21,7 @@ DEPARTURE_EVENT = "departure"
 CONSTANT_DISTRIBUTION_VALUE = 5
 MOCK_DISTRIBUTION = Distribution.constant(value=CONSTANT_DISTRIBUTION_VALUE)
 SERVER_ID = 0
+DESTINATION_SERVER_ID = 1
 JOB_SERVICE_TIME = 2
 MOCK_NEW_JOB_BEING_EXECUTED = (JOB_SERVICE_TIME, MagicMock())
 
@@ -33,12 +34,14 @@ def mock_event():
     event.server_id = SERVER_ID
     event.type = ARRIVAL_EVENT
     event.job = MagicMock()
+    event.server = MagicMock()
 
     return event
 
 @pytest.fixture
 def mock_execution_object():
     network = OpenNetwork()
+    network.add_server(MOCK_DISTRIBUTION)
     network.add_server(MOCK_DISTRIBUTION)
     network.add_entry_point(SERVER_ID, MOCK_DISTRIBUTION)
     
@@ -142,13 +145,14 @@ def test_route_job_after_event_when_route_is_end_should_end_job_and_compute_resu
 """route != 'end' (Válido)"""
 def test_route_job_after_event_when_route_is_not_end_should_end_job_and_compute_results(mock_execution_object, mock_event):
     mock_event.server.route_job = MagicMock()
-    mock_event.server.route_job.return_value = ZERO_VALUE
+    mock_event.server.route_job.return_value = DESTINATION_SERVER_ID
     mock_event.job.arrival_time = ZERO_VALUE
     mock_execution_object._add_next_departure_event = MagicMock()
+    mock_execution_object.network_configuration.servers[DESTINATION_SERVER_ID] = MagicMock()
     
     mock_execution_object._route_job_after_event(mock_event)
 
-    mock_event.job.reroute.assert_called_once_with(ZERO_VALUE, ZERO_VALUE)
+    mock_event.job.reroute.assert_called_once_with(ZERO_VALUE, DESTINATION_SERVER_ID)
     mock_execution_object._add_next_departure_event.assert_called_once()
 
 

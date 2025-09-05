@@ -15,7 +15,7 @@ class Execution:
         self.event_queue = queue
         self.event_count = len(queue)
         self.network_configuration = network_configuration
-        self.next_departure_by_server = [0] * len(network_configuration.servers)
+        self.next_departure_by_server = [None] * len(network_configuration.servers)
         self.results = SimulationResults(len(self.network_configuration.servers), time, time_unit)
     
     def _add_next_departure_event(self, server: int, job: Job, current_time: float, service_time: float, event: str):
@@ -40,7 +40,7 @@ class Execution:
                 self.results.reroute(self.current_time, event.server_id, route)
                 self.results.compute_arrival(self.current_time, route)
 
-            service_time = destination_server.job_arrival(event.job, self.current_time, self.next_departure_by_server[event.server_id])
+            service_time = destination_server.job_arrival(self.next_departure_by_server[event.server_id])
 
             if service_time:
                 self._add_next_departure_event(route, event.job, self.current_time, service_time, event='departure' if destination_server.is_next_event_departure() else 'preemption')
@@ -53,7 +53,7 @@ class Execution:
 
     def _case_event_is_arrival(self, event: Event):
         event.job.reroute(self.current_time)
-        service_time = event.server.job_arrival(event.job, self.current_time, self.next_departure_by_server[event.server_id])
+        service_time = event.server.job_arrival(event)
 
         if service_time:
             self._add_next_departure_event(event.server_id, event.job, self.current_time, service_time, event='departure' if event.server.is_next_event_departure() else 'preemption')

@@ -53,8 +53,10 @@ class ServerExecution:
         
         return True
 
-    def job_arrival(self, job: Job, time: float, event: Event) -> Optional[float]:
+    def job_arrival(self, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
+        job = event.job
+        time = event.current_time
         
         if self.current_job_being_executed == None:
             self._execute_new_job(job, job_size, time)
@@ -126,10 +128,10 @@ class Server:
     def is_next_event_departure(self) -> bool:
         return self.server_execution.is_next_event_departure()
 
-    def job_arrival(self, job: Job, time: float, event: Event) -> Optional[float]:
+    def job_arrival(self, event: Event) -> Optional[float]:
         self.job_count += 1
 
-        return self.server_execution.job_arrival(job, time, event)
+        return self.server_execution.job_arrival(event)
     
     def finish_execution(self, time: float, is_preemption: bool=False) -> Optional[tuple]:
         if is_preemption:
