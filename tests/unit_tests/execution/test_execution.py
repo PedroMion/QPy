@@ -19,6 +19,7 @@ ARRIVAL_EVENT = "arrival"
 DEPARTURE_EVENT = "departure"
 
 CONSTANT_DISTRIBUTION_VALUE = 5
+PREEMPTION_TIME = 2
 MOCK_DISTRIBUTION = Distribution.constant(value=CONSTANT_DISTRIBUTION_VALUE)
 SERVER_ID = 0
 DESTINATION_SERVER_ID = 1
@@ -121,6 +122,9 @@ def test_add_next_departure_event_when_event_is_departure_should_serve_job(mock_
 
 """event = 'preemption' (Válido)"""
 def test_add_next_departure_event_when_event_is_preemption_should_serve_job(mock_execution_object, mock_event):
+    mock_execution_object.network_configuration.servers[SERVER_ID].get_preemption_time = MagicMock()
+    mock_execution_object.network_configuration.servers[SERVER_ID].get_preemption_time.return_value = PREEMPTION_TIME
+
     mock_execution_object._add_next_departure_event(SERVER_ID, mock_event.job, VALID_TIME, JOB_SERVICE_TIME, event_type='preemption')
 
     assert mock_execution_object.event_count == EVENT_COUNT + 1

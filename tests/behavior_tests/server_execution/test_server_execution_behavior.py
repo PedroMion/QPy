@@ -11,7 +11,6 @@ from qpy.queue_discipline import QueueDiscipline
 
 JOB_ID = 1
 JOB_PRIORITY = 1
-JOB_SIZE = 3
 JOB_ARRIVAL_TIME = 1
 
 JOB_ID_2 = 2
@@ -81,7 +80,7 @@ def test_round_robin_preemption_when_three_jobs_in_server_should_switch_jobs(rou
     round_robin_test_object.finish_execution(TIME + PREEMPTION_TIME, is_preemption=True)
 
     assert round_robin_test_object.server_execution.current_job_being_executed == job_test_object_2
-    assert round_robin_test_object.server_execution.current_job_size == 2
+    assert round_robin_test_object.server_execution.current_job_size == DISTRIBUTION_TIME
     assert round_robin_test_object.server_execution.queue.first_in_line() == (DISTRIBUTION_TIME, job_test_object_3)
     assert round_robin_test_object.server_execution.queue.first_in_line() == (DISTRIBUTION_TIME - PREEMPTION_TIME, job_test_object_1)
 

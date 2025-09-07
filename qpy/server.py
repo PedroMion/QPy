@@ -52,6 +52,11 @@ class ServerExecution:
                 return False
         
         return True
+    
+    def get_preemption_time(self) -> float:
+        if self.queue.discipline == Discipline.RR:
+            return self.queue.preemption_time
+        return None
 
     def job_arrival(self, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
@@ -127,6 +132,9 @@ class Server:
     
     def is_next_event_departure(self) -> bool:
         return self.server_execution.is_next_event_departure()
+    
+    def get_preemption_time(self) -> float:
+        return self.server_execution.get_preemption_time()
 
     def job_arrival(self, event: Event) -> Optional[float]:
         self.job_count += 1
