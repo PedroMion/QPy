@@ -39,3 +39,5 @@ class Job:
 
         if new_server:
             self._switch_servers_and_compute_state(completion_time, new_server)
+        else:
+            self.arrival_time_at_current_server = completion_time

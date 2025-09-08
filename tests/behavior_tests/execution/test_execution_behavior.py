@@ -97,6 +97,7 @@ def test_execute_behavior_when_queue_is_round_robin(execution_with_round_robin_t
     event = Event(JOB_ARRIVAL_TIME, EVENT_ID, 'arrival', job_test_object_1, SERVER_ID)
     second_event = Event(JOB_ARRIVAL_TIME_2, EVENT_ID + 1, 'arrival', job_test_object_2, SERVER_ID)
     third_event = Event(JOB_ARRIVAL_TIME_3, EVENT_ID + 2, 'arrival', job_test_object_3, SERVER_ID)
+    execution_with_round_robin_test_object.event_count = 3
 
     heapq.heappush(execution_with_round_robin_test_object.event_queue, (JOB_ARRIVAL_TIME, EVENT_ID, event))
     heapq.heappush(execution_with_round_robin_test_object.event_queue, (JOB_ARRIVAL_TIME_2, EVENT_ID + 1, second_event))
