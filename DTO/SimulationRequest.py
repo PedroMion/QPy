@@ -31,6 +31,8 @@ class NetworkParametersModel(BaseModel):
 
 class NetworkConfigurationModel(BaseModel):
     type: str
+    numberOfTerminals: str
+    averageThinkTime: str
 
 class SimulationRequest(BaseModel):
     networkParameters: NetworkParametersModel
