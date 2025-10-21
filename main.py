@@ -1,5 +1,6 @@
-from fastapi import FastAPI
-from qpy import environment
+from DTO import SimulationRequest
+from fastapi import FastAPI, HTTPException
+from Mappers.SimulationRequestMapper import SimulationRequestMapper
 
 app = FastAPI(
     title="qpy API",
@@ -7,9 +8,20 @@ app = FastAPI(
     version="0.1.0",
 )
 
-@app.get("/simulate")
-def simulate():
+@app.post("/simulate", response_model=None)
+async def simulate(request) -> dict:
     """
-    Simulates a queue and retuns metrics.
+    Recebe uma configuração de rede e executa a simulação da qpy.
     """
-    return "Hello World!"
+
+    try:
+        smr = SimulationRequestMapper(request)
+
+        env = smr.getEnvironment()
+
+        results = env.simulate(float(request.networkParameters.simulationTime), float(request.networkParameters.warmupTime))
+
+        return {"Status": "Ok"}
+
+    except Exception as e:
+        return {"Status": "error"}
