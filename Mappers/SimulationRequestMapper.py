@@ -12,7 +12,7 @@ class SimulationRequestMapper:
         self._add_connections()
 
     def _create_environment_object(self):
-        if self.request.networkConfiguration.type == "Open":
+        if self.request.networkConfiguration.networkType == "Open":
             self.env = Environment()
         else:
             self.env = Environment(number_of_terminals=int(self.request.networkConfiguration.numberOfTerminals),
@@ -47,7 +47,7 @@ class SimulationRequestMapper:
                 raise ValueError('Queue discipline not allowed: ' + queueProperties.queueDiscipline)
 
     def _add_servers(self):
-        for server in enumerate(self.request.devices.get("servers", [])):
+        for server in self.request.devices.servers:
             service_dist = self._get_distribution(server.distribution)
             queue_disc = None
             if server.queue:
@@ -55,7 +55,7 @@ class SimulationRequestMapper:
             self.server_ids_mapper[server.device_id] = self.env.add_server(service_dist, queue_disc)
 
     def _add_arrivals(self):
-        for arrival in self.request.devices.get("arrivals", []):
+        for arrival in self.request.devices.arrivals:
             arrival_dist = self._get_distribution(arrival.distribution)
 
             priority = None
@@ -63,15 +63,14 @@ class SimulationRequestMapper:
                 priority = {p["key"]: p["prob"] for p in arrival.priorityDistribution}
 
             target_server_id = self.server_ids_mapper[arrival.destination]
-            self.env.add_entry_point(target_server_id, arrival_dist, priority)
-            
+            self.env.add_entry_point(target_server_id, arrival_dist, priority)            
 
     def _add_devices(self):
         self.server_ids_mapper = {}
         
         self._add_servers()
 
-        if self.request.networkConfiguration.type == "Open":
+        if self.request.networkConfiguration.networkType == "Open":
             self._add_arrivals()
         else:
             # Adiciona probabilidades de roteamento do terminal

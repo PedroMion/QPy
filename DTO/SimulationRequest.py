@@ -1,14 +1,13 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Any
 from pydantic import BaseModel
-
 
 class DistributionModel(BaseModel):
     distribution: str
-    params: Dict[str, str]
+    params: Dict[str, Any]
 
 class QueueModel(BaseModel):
     queueDiscipline: str
-    params: Dict[str, str]
+    params: Dict[str, Any]
 
 class ServerModel(BaseModel):
     device_id: str
@@ -19,7 +18,7 @@ class ArrivalModel(BaseModel):
     device_id: str
     distribution: DistributionModel
     destination: str
-    priorityDistribution: Optional[List[Dict[str, str]]] = None
+    priorityDistribution: Optional[List[Dict[str, Any]]] = None
 
 class ConnectionModel(BaseModel):
     source: str
@@ -32,12 +31,15 @@ class NetworkParametersModel(BaseModel):
 
 class NetworkConfigurationModel(BaseModel):
     networkType: str
-    numberOfTerminals: str
-    averageThinkTime: str
+    numberOfTerminals: Optional[str] = None 
+    averageThinkTime: Optional[str] = None
+
+class DevicesModel(BaseModel):
+    servers: List[ServerModel]
+    arrivals: Optional[List[ArrivalModel]] = None
 
 class SimulationRequest(BaseModel):
     networkParameters: NetworkParametersModel
     networkConfiguration: NetworkConfigurationModel
-    servers: List[ServerModel]
-    arrivals: List[ArrivalModel]
+    devices: DevicesModel
     connections: List[ConnectionModel]

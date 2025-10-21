@@ -1,4 +1,4 @@
-from DTO import SimulationRequest
+from DTO.SimulationRequest import SimulationRequest
 from fastapi import FastAPI, HTTPException
 from Mappers.SimulationRequestMapper import SimulationRequestMapper
 
@@ -9,7 +9,7 @@ app = FastAPI(
 )
 
 @app.post("/simulate", response_model=None)
-async def simulate(request) -> dict:
+async def simulate(request: SimulationRequest) -> dict:
     """
     Recebe uma configuração de rede e executa a simulação da qpy.
     """
@@ -17,11 +17,11 @@ async def simulate(request) -> dict:
     try:
         smr = SimulationRequestMapper(request)
 
-        env = smr.getEnvironment()
+        env = smr.get_environemnt()
 
         results = env.simulate(float(request.networkParameters.simulationTime), float(request.networkParameters.warmupTime))
 
         return {"Status": "Ok"}
 
     except Exception as e:
-        return {"Status": "error"}
+        raise HTTPException(status_code=400, detail=str(e))
