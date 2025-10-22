@@ -10,12 +10,12 @@ class QueueModel(BaseModel):
     params: Dict[str, Any]
 
 class ServerModel(BaseModel):
-    device_id: str
+    deviceId: str
     distribution: DistributionModel
     queue: Optional[QueueModel] = None
 
 class ArrivalModel(BaseModel):
-    device_id: str
+    deviceId: str
     distribution: DistributionModel
     destination: str
     priorityDistribution: Optional[List[Dict[str, Any]]] = None
@@ -25,14 +25,22 @@ class ConnectionModel(BaseModel):
     target: str
     routingProbability: Optional[float] = None
 
+class TerminalRoutingModel(BaseModel):
+    target: str
+    routingProbability: Optional[float] = None
+
+class TerminalConfigurationModel(BaseModel):
+    routes: List[TerminalRoutingModel]
+    priorityDistribution: Optional[List[Dict[str, Any]]] = None
+
 class NetworkParametersModel(BaseModel):
     simulationTime: float
     warmupTime: float
 
 class NetworkConfigurationModel(BaseModel):
     networkType: str
-    numberOfTerminals: Optional[str] = None 
-    averageThinkTime: Optional[str] = None
+    numberOfTerminals: Optional[int] = None 
+    thinkTimeDistribution: Optional[DistributionModel] = None
 
 class DevicesModel(BaseModel):
     servers: List[ServerModel]
@@ -42,4 +50,5 @@ class SimulationRequest(BaseModel):
     networkParameters: NetworkParametersModel
     networkConfiguration: NetworkConfigurationModel
     devices: DevicesModel
-    connections: List[ConnectionModel]
+    terminalsConfiguration: Optional[TerminalConfigurationModel] = None
+    connections: Optional[List[ConnectionModel]] = None
