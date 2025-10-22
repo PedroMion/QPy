@@ -5,7 +5,7 @@ from Mappers.Utils.QueueMapper import get_queue_discipline
 
 class SimulationRequestMapper:
     def __init__(self, request):
-        self.request = request
+        self._request = request
         self._setup_environment()
 
     def _setup_environment(self):
@@ -14,14 +14,14 @@ class SimulationRequestMapper:
         self._add_connections()
 
     def _create_environment_object(self):
-        if self.request.networkConfiguration.networkType == "Open":
+        if self._request.networkConfiguration.networkType == "Open":
             self.env = Environment()
         else:
-            self.env = Environment(number_of_terminals=int(self.request.networkConfiguration.numberOfTerminals),
-                            average_think_time=int(self.request.networkConfiguration.averageThinkTime))
+            self.env = Environment(number_of_terminals=int(self._request.networkConfiguration.numberOfTerminals),
+                            average_think_time=int(self._request.networkConfiguration.averageThinkTime))
 
     def _add_servers(self):
-        for server in self.request.devices.servers:
+        for server in self._request.devices.servers:
             service_dist = get_distribution(server.distribution)
             queue_disc = None
             if server.queue:
@@ -29,7 +29,7 @@ class SimulationRequestMapper:
             self.server_ids_mapper[server.device_id] = self.env.add_server(service_dist, queue_disc)
 
     def _add_arrivals(self):
-        for arrival in self.request.devices.arrivals:
+        for arrival in self._request.devices.arrivals:
             arrival_dist = get_distribution(arrival.distribution)
 
             priority = None
@@ -44,14 +44,14 @@ class SimulationRequestMapper:
         
         self._add_servers()
 
-        if self.request.networkConfiguration.networkType == "Open":
+        if self._request.networkConfiguration.networkType == "Open":
             self._add_arrivals()
         else:
             # Adiciona probabilidades de roteamento do terminal
             pass
     
     def _add_connections(self):
-        for connection in self.request.connections:
+        for connection in self._request.connections:
             if connection.source.startswith("server") and connection.target.startswith("server"):
                 origin = self.server_ids_mapper[connection.source]
                 dest = self.server_ids_mapper[connection.target]

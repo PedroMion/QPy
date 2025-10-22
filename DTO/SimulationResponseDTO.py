@@ -19,7 +19,7 @@ class PriorityModel(BaseModel):
     averageTimeInSystem: float
     averageQueueTime: float
 
-class EnvironmentsModel(BaseModel):
+class EnvironmentModel(BaseModel):
     processedJobs: int
     averageTimeInSystem: float
     averageQueueTime: float
@@ -27,7 +27,7 @@ class EnvironmentsModel(BaseModel):
     throughput: float
     maxDemand: float
 
-class SimulationResult(BaseModel):
-    environment: EnvironmentsModel
+class SimulationResponse(BaseModel):
+    environment: EnvironmentModel
     servers: List[ServerModel]
     priority: Optional[List[PriorityModel]] = None
