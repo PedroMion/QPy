@@ -28,7 +28,7 @@ class SimulationRequestMapper:
             queue_disc = None
             if server.queue:
                 queue_disc = get_queue_discipline(server.queue)
-            self.server_ids_mapper[server.deviceId] = self._env.add_server(service_dist, queue_disc)
+            self._server_ids_mapper[server.deviceId] = self._env.add_server(service_dist, queue_disc)
 
     def _add_arrivals(self):
         for arrival in self._request.devices.arrivals:
@@ -38,7 +38,7 @@ class SimulationRequestMapper:
             if arrival.priorityDistribution:
                 priority = {p["key"]: p["prob"] for p in arrival.priorityDistribution}
 
-            target_server_id = self.server_ids_mapper[arrival.destination]
+            target_server_id = self._server_ids_mapper[arrival.destination]
             self._env.add_entry_point(target_server_id, arrival_dist, priority)            
 
     def _add_terminal_configuration(self):
@@ -50,12 +50,12 @@ class SimulationRequestMapper:
             self._env.add_priority_closed_network(priorities)
         
         for route in config.routes:
-            target_server_id = self.server_ids_mapper[route.target]
+            target_server_id = self._server_ids_mapper[route.target]
 
             self._env.add_terminals_routing_probability(target_server_id, route.routingProbability)   
 
     def _add_devices(self):
-        self.server_ids_mapper = {}
+        self._server_ids_mapper = {}
         
         self._add_servers()
 
@@ -67,10 +67,13 @@ class SimulationRequestMapper:
     def _add_connections(self):
         for connection in self._request.connections:
             if connection.source.startswith("server") and connection.target.startswith("server"):
-                origin = self.server_ids_mapper[connection.source]
-                dest = self.server_ids_mapper[connection.target]
+                origin = self._server_ids_mapper[connection.source]
+                dest = self._server_ids_mapper[connection.target]
 
                 self._env.add_servers_connection(origin, dest, connection.routingProbability or 1.0)
     
     def get_environemnt(self):
         return self._env
+    
+    def get_ids_map(self):
+        return self._server_ids_mapper

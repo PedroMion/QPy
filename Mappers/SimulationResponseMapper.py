@@ -3,8 +3,9 @@ from qpy import SimulationResults
 
 
 class SimulationResponseMapper:
-    def __init__(self, results: SimulationResults):
+    def __init__(self, results: SimulationResults, ids_mapper: dict):
         self._results = results
+        self._ids_mapper = {v: k for k, v in ids_mapper.items()}
         self._response_object = None
 
         self._map_simulation_response()
@@ -33,7 +34,7 @@ class SimulationResponseMapper:
 
         for server in self._results.server_metrics:
             server_response_object = ServerModel(
-                serverId = '',
+                serverId = self._ids_mapper[server.server_id],
                 processedJobs = server.get_number_of_processed_jobs(),
                 averageTimeInServer = server.get_mean_time_in_server(),
                 averageQueueTime = server.get_mean_queue_time(),
