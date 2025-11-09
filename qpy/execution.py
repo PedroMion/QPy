@@ -66,7 +66,7 @@ class Execution:
 
             self._add_next_departure_event(event.server_id, event.job, self.current_time, service_time, event_type='departure' if event.server.is_next_event_departure() else 'preemption')
         if event.job.arrival_time > self.warmup:
-            self.results.compute_arrival(self.current_time, event.server_id)
+            self.results.compute_arrival(self.current_time, event.server_id, (event.job.arrival_time == event.current_time))
 
     def _case_event_is_departure_or_preemption(self, event: Event):
         new_job_being_executed = event.server.finish_execution(self.current_time, is_preemption=(event.type == 'preemption'))

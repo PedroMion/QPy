@@ -47,19 +47,18 @@ class SimulationResults:
         for server_id in range(len(self.server_metrics)):
             self.server_metrics[server_id].compute_environment_departure(job)
 
-    def compute_arrival(self, current_time, server_id):
+    def compute_arrival(self, current_time, server_id, should_update_environemnt = False):
         validate_number_params_not_negative_and_not_none(function_name='compute_arrival', current_time=current_time, server_id=server_id)
 
-        self.environment_metrics.compute_arrival(current_time)
         self.server_metrics[server_id].compute_arrival(current_time)
+
+        if should_update_environemnt:
+            self.environment_metrics.compute_arrival(current_time)
 
     def reroute(self, current_time, origin_server, destination_server):
         validate_number_params_not_negative_and_not_none(function_name='reroute', current_time=current_time, origin_server=origin_server)
 
         self.server_metrics[origin_server].compute_departure(current_time)
-
-        if destination_server:
-            self.server_metrics[destination_server].compute_arrival(current_time)
 
     def compute_departure(self, job, current_time):
         validate_number_params_not_negative_and_not_none(function_name='compute_departure', current_time=current_time)

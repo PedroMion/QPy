@@ -33,7 +33,6 @@ class Job:
     def reroute(self, completion_time: float, new_server: int = None):
         validate_number_params_not_negative_and_not_none(function_name='reroute', completion_time=completion_time)
         validate_number_params_not_negative(function_name='reroute', new_server=new_server)
-
         
         self.total_time_per_server[self.current_server] += completion_time - self.arrival_time_at_current_server
 
