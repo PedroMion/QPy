@@ -28,6 +28,10 @@ class IQueue(ABC):
         pass
 
     @abstractmethod
+    def clear(self):
+        pass
+
+    @abstractmethod
     def with_preemption(self):
         pass
 
@@ -48,6 +52,9 @@ class FirstComeFirstServed(IQueue):
         except:
             return
     
+    def clear(self):
+        self._queue = deque()
+
     def with_preemption(self):
         return False
 
@@ -67,6 +74,9 @@ class LastComeFirstServed(IQueue):
             return self._queue.pop()
         except:
             return
+
+    def clear(self):
+        self._queue = deque()
 
     def with_preemption(self):
         return False
@@ -91,6 +101,9 @@ class ShortestRemainingTime(IQueue):
         except:
             return
 
+    def clear(self):
+        self._queue = []
+
     def with_preemption(self):
         return self._preemption
 
@@ -112,6 +125,9 @@ class RoundRobin(IQueue):
         except:
             return
     
+    def clear(self):
+        self._queue = deque()
+
     def with_preemption(self):
         return True
 
@@ -135,6 +151,9 @@ class PriorityQueue(IQueue):
         except:
             return
     
+    def clear(self):
+        self._queue = []
+
     def with_preemption(self):
         return self._preemption
 

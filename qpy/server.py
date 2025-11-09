@@ -46,6 +46,10 @@ class ServerExecution:
         
         return False
 
+    def reset_configuration(self):
+        self.queue.clear()
+        self._reset_execution_configuration()
+
     def is_next_event_departure(self) -> bool:
         if self.queue.discipline == Discipline.RR:
             if self.current_job_size > self.queue.preemption_time:
@@ -60,6 +64,7 @@ class ServerExecution:
 
     def job_arrival(self, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
+        job_size = job_size if job_size > 0 else 0.001
         job = event.job
         time = event.current_time
         
@@ -127,6 +132,9 @@ class Server:
         self.destinations["end"] -= probability
         self.destinations[destination_server_id] = probability
     
+    def reset_configuration(self):
+        self.server_execution.reset_configuration()
+
     def route_job(self) -> Union[int, str]:
         return randomly_draw_from_dictionary(self.destinations)
     

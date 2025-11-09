@@ -29,6 +29,10 @@ class BaseNetwork(INetwork):
     def __init__(self):
         self.servers = []
 
+    def reset_servers(self):
+        for server in self.servers:
+            server.reset_configuration()
+
     def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None) -> int:        
         if not queue_discipline:
             queue_discipline = QueueDiscipline.fcfs()

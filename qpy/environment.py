@@ -35,6 +35,9 @@ class Environment():
             self._network = ClosedNetwork(think_time_distribution, number_of_terminals)
             self._is_closed = True
     
+    def _reset_environment(self):
+        self._network.reset_servers()
+
     @validate_call(config=dict(arbitrary_types_allowed=True))
     def add_server(self, service_distribution: IDistribution, queue_discipline: Optional[IQueue] = None) -> int:
         """
@@ -160,6 +163,7 @@ class Environment():
         SimulationResults
             An object containing the metrics and results from the simulation.
         """
+        self._reset_environment()
         queue = self._network.generate_jobs(time_in_seconds + warmup_time)
 
         new_execution = Execution(time_in_seconds, warmup_time, queue, self._network, self._time_unit)
