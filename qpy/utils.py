@@ -74,9 +74,9 @@ def generate_new_job_closed_network(queue: list, event_count: int, time: float, 
     think_time += think_time_distribution.sample()
     routing = randomly_draw_from_dictionary(routing_probabilities)
 
-  new_job = Job(event_count, time + think_time, routing, _randomize_priority(priorities))
+  new_job = Job(event_count, round(time + think_time, 4), routing, _randomize_priority(priorities))
 
-  heapq.heappush(queue, (time + think_time, event_count, Event(time + think_time, event_count, 'arrival', new_job, routing)))
+  heapq.heappush(queue, (round(time + think_time, 4), event_count, Event(time + think_time, event_count, 'arrival', new_job, routing)))
     
 
 def generate_arrivals(queue: list, event_count: int, delta: float, server: int, arrival_distribution: IDistribution, priorities: Optional[dict] = None):

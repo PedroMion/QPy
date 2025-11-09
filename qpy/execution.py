@@ -95,7 +95,7 @@ class Execution:
 
             next_event.server = self.network_configuration.servers[next_event.server_id]
 
-            self.current_time = next_event.current_time
+            self.current_time = round(next_event.current_time, 4)
 
             if next_event.type == 'arrival':
                 self._case_event_is_arrival(next_event)
