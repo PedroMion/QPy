@@ -34,7 +34,7 @@ def test_exponential_distribution_samples():
     for _ in range(NUMBER_OF_EXECUTIONS):
         sample_sum += distribution.sample()
     
-    assert value_within_range(1 / LAMBDA_VALUE_EXPONENTIAL, sample_sum / NUMBER_OF_EXECUTIONS, DELTA_PERCENTAGE)
+    assert value_within_range(LAMBDA_VALUE_EXPONENTIAL, sample_sum / NUMBER_OF_EXECUTIONS, DELTA_PERCENTAGE)
 
 def test_uniform_distribution_samples():
     distribution = Distribution.uniform(LOWER_BOUND_UNIFORM, UPPER_BOUND_UNIFORM)

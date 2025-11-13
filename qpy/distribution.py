@@ -22,7 +22,7 @@ class ExponentialDistribution(IDistribution):
         self._lambda_value = lambda_value
     
     def sample(self) -> float:
-        return round(-np.log(1-random.random())/self._lambda_value, 4)
+        return round(-np.log(1 - random.random()) * self._lambda_value, 4)
 
 class UniformDistribution(IDistribution):
     def __init__(self, lower_bound: float, upper_bound: float):

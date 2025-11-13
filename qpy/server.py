@@ -9,6 +9,7 @@ from .validation_utils import validate_object_params_not_none, validate_number_p
 
 class ServerExecution:
     def __init__(self, service_distribution: IDistribution, queue: IQueue):
+        self.MIN_SERVICE_TIME = 0.0001
         self.service_distribution = service_distribution
         self.queue = queue
 
@@ -64,7 +65,7 @@ class ServerExecution:
 
     def job_arrival(self, event: Event) -> Optional[float]:
         job_size = self.service_distribution.sample()
-        job_size = job_size if job_size > 0 else 0.001
+        job_size = job_size if job_size > 0 else self.MIN_SERVICE_TIME
         job = event.job
         time = event.current_time
         
