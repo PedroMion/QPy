@@ -15,14 +15,14 @@ class ConstantDistribution(IDistribution):
         self._value = value
     
     def sample(self) -> float:
-        return round(self._value, 4)
+        return max(round(self._value, 4), 0.0001)
 
 class ExponentialDistribution(IDistribution):
     def __init__(self, lambda_value: float):
         self._lambda_value = lambda_value
     
     def sample(self) -> float:
-        return round(-np.log(1 - random.random()) * self._lambda_value, 4)
+        return max(round(-np.log(1 - random.random()) * self._lambda_value, 4), 0.0001)
 
 class UniformDistribution(IDistribution):
     def __init__(self, lower_bound: float, upper_bound: float):
@@ -30,7 +30,7 @@ class UniformDistribution(IDistribution):
         self._upper_bound = upper_bound
     
     def sample(self) -> float:
-        return round(random.uniform(self._lower_bound, self._upper_bound), 4)
+        return max(round(random.uniform(self._lower_bound, self._upper_bound), 4), 0.0001)
     
 class NormalDistribution(IDistribution):
     def __init__(self, mu: float, sigma: float):
@@ -38,7 +38,7 @@ class NormalDistribution(IDistribution):
         self._sigma = sigma
     
     def sample(self) -> float:
-        return round(random.gauss(self._mu, self._sigma), 4)
+        return max(round(random.gauss(self._mu, self._sigma), 4), 0.0001)
     
 class Distribution():
     def __new__(cls, *args, **kwargs):
