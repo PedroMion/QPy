@@ -41,7 +41,7 @@ def test_open_network_MM2_all_jobs_go_through_both_servers_constant_FCFS():
 
     assert ans.server_metrics[1].get_number_of_processed_jobs() == TOTAL_SIMULATION_TIME * LAMBDA - 1 # All jobs go through server 1
 
-def test_open_network_MM3_all_jobs_go_through_server_0_and_half_chance_to_both_servers():
+def test_open_network_MM3_all_jobs_go_through_server_0_and_half_chance_to_both_servers_constant():
     env = _create_environment_with_servers(num_of_servers=3)
     env.add_servers_connection(0, 1, 0.5)
     env.add_servers_connection(0, 2, 0.5)

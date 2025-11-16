@@ -22,7 +22,7 @@ class INetwork(ABC):
         return
 
     @abstractmethod
-    def finish_job(self, event_queue: list, time: float):
+    def finish_job(self, event_queue: list, time: float, event_count: int) -> int:
         return
 
 class BaseNetwork(INetwork):
@@ -56,8 +56,8 @@ class BaseNetwork(INetwork):
     def generate_jobs(self, time_limit: float): 
         return
 
-    def finish_job(self, event_queue: list, time: float):
-        return
+    def finish_job(self, event_queue: list, time: float, event_count: int):
+        return event_count
 
 class OpenNetwork(BaseNetwork):
     def __init__(self):
@@ -93,8 +93,8 @@ class OpenNetwork(BaseNetwork):
                 event_count = len(event_queue)
         return event_queue
 
-    def finish_job(self, event_queue: Optional[list] = None, time: Optional[float] = None):
-        return
+    def finish_job(self, event_queue: Optional[list] = None, time: Optional[float] = None, event_count: Optional[int] = None) -> int:
+        return event_count
     
 
 
@@ -104,7 +104,6 @@ class ClosedNetwork(BaseNetwork):
         self.entry_point_routing = defaultdict(lambda: 0)
         self.think_time_distribution = think_time_distribution
         self.number_of_terminals = number_of_terminals
-        self.job_count = 0
 
         super().__init__()
 
@@ -136,9 +135,9 @@ class ClosedNetwork(BaseNetwork):
         for i in range(self.number_of_terminals):
             generate_new_job_closed_network(event_queue, i, 0, self.think_time_distribution, self.entry_point_routing, self.priorities)
         
-        self.job_count = self.number_of_terminals
-
         return event_queue
 
-    def finish_job(self, event_queue: list, time: float):
-        generate_new_job_closed_network(event_queue, self.job_count, time, self.think_time_distribution, self.entry_point_routing, self.priorities)
+    def finish_job(self, event_queue: list, time: float, event_count: int) -> int:
+        generate_new_job_closed_network(event_queue, event_count, time, self.think_time_distribution, self.entry_point_routing, self.priorities)
+
+        return event_count + 1

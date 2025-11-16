@@ -76,7 +76,7 @@ def generate_new_job_closed_network(queue: list, event_count: int, time: float, 
 
   new_job = Job(event_count, round(time + think_time, 4), routing, _randomize_priority(priorities))
 
-  heapq.heappush(queue, (round(time + think_time, 4), event_count, Event(time + think_time, event_count, 'arrival', new_job, routing)))
+  heapq.heappush(queue, (round(time + think_time, 4), event_count, Event(round(time + think_time, 4), event_count, 'arrival', new_job, routing)))
   event_count += 1
     
 

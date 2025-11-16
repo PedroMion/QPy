@@ -22,9 +22,9 @@ class Execution:
         if event_type == 'preemption':
             service_time = self.network_configuration.servers[server].get_preemption_time()
             
-        new_event_object = Event(current_time + service_time, self.event_count, event_type, job, server)
+        new_event_object = Event(round(current_time + service_time, 4), self.event_count, event_type, job, server)
         
-        heapq.heappush(self.event_queue, (current_time + service_time, self.event_count, new_event_object))
+        heapq.heappush(self.event_queue, (round(current_time + service_time, 4), self.event_count, new_event_object))
         self.next_departure_event_by_server[server] = new_event_object
 
         self.event_count += 1
@@ -54,7 +54,7 @@ class Execution:
             if event.job.arrival_time > self.warmup:
                 self.results.reroute(self.current_time, event.server_id, destination_server=None)
                 self.results.compute_departure(event.job, self.current_time)
-            self.network_configuration.finish_job(self.event_queue, self.current_time)
+            self.event_count = self.network_configuration.finish_job(self.event_queue, self.current_time, self.event_count)
 
     def _case_event_is_arrival(self, event: Event):
         event.job.reroute(self.current_time)

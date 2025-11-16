@@ -50,7 +50,7 @@ def test_open_network_MM2_all_jobs_go_through_both_servers_exponential_FCFS():
     assert value_within_range(expected_time_in_system, ans.environment_metrics.get_mean_time_in_system(), DELTA_JOBS_PERCENTAGE)
     assert value_within_range(expected_time_in_queue, ans.environment_metrics.get_mean_queue_time(), DELTA_JOBS_PERCENTAGE)
 
-def test_open_network_MM3_all_jobs_go_through_server_0_and_half_chance_to_both_servers():
+def test_open_network_MM3_all_jobs_go_through_server_0_and_half_chance_to_both_servers_exponential():
     env = _create_environment_with_servers(num_of_servers=3)
     env.add_servers_connection(0, 1, 0.5)
     env.add_servers_connection(0, 2, 0.5)
