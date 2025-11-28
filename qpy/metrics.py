@@ -106,7 +106,7 @@ class ServerMetrics(GeneralMetrics):
         return round(self.cumulative_visits_per_job / self.total_simulation_time, 4) if self.total_simulation_time > 0 else 0
     
     def get_demand(self) -> float:
-        return round(self.cumulative_time_in_server / self.total_number_of_processed_jobs_in_system, 4) if self.total_number_of_processed_jobs_in_system > 0 else 0
+        return round((self.cumulative_time_in_server - self.cumulative_queue_times) / self.total_number_of_processed_jobs_in_system, 4) if self.total_number_of_processed_jobs_in_system > 0 else 0
 
 class PriorityMetrics(GeneralMetrics):
     def __init__(self, total_simulation_time: float):
