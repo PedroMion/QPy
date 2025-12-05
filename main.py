@@ -1,4 +1,7 @@
 import os
+
+
+from dotenv import load_dotenv
 from DTO.SimulationRequestDTO import SimulationRequest
 from DTO.SimulationResponseDTO import SimulationResponse
 from fastapi import FastAPI, HTTPException
@@ -6,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from Mappers.SimulationResponseMapper import SimulationResponseMapper
 from Mappers.SimulationRequestMapper import SimulationRequestMapper
 from middlewares.api_key import api_key_middleware
+
+load_dotenv()
 
 app = FastAPI(
     title="qpy API",
