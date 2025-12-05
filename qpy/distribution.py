@@ -57,6 +57,9 @@ class Distribution():
         value : float - Required
             The value to always be returned when this distribution is sampled.
         """
+        if value < 0:
+            raise ValueError('Negative values for distribution parameters are not allowed')
+        
         return ConstantDistribution(value)
     
     @staticmethod
@@ -70,6 +73,9 @@ class Distribution():
         lambda_value : float - Required
             The rate parameter (lambda) of the exponential distribution.
         """
+        if lambda_value < 0:
+            raise ValueError('Negative values for distribution parameters are not allowed')
+                
         return ExponentialDistribution(lambda_value)
 
     @staticmethod
@@ -91,6 +97,9 @@ class Distribution():
         ValueError
             If the lower bound is greater than the upper bound.
         """
+        if lower_bound < 0 or upper_bound < 0:
+            raise ValueError('Negative values for distribution parameters are not allowed')
+
         if upper_bound >= lower_bound:
             return UniformDistribution(lower_bound, upper_bound)
         raise ValueError('Lower bound should be smaller than upper bound.')
@@ -109,4 +118,7 @@ class Distribution():
         sigma : float - Required
             The standard deviation (sigma) of the normal distribution.
         """
+        if mu < 0 or sigma < 0:
+            raise ValueError('Negative values for distribution parameters are not allowed')
+                
         return NormalDistribution(mu, sigma)

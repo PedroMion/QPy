@@ -203,6 +203,9 @@ class QueueDiscipline():
         preemption_time : float - Required
             The time quantum after which the current job is preempted and the next one is served.
         """
+        if preemption_time <= 0:
+            raise ValueError('Preemption time should be positive float')
+
         return RoundRobin(preemption_time)
     
     @staticmethod
