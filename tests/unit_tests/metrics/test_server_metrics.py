@@ -209,6 +209,6 @@ def test_get_demand_when_no_jobs_were_processed_should_return_zero(server_metric
 
 """total_number_of_processed_jobs_in_system > 0 (Válido)"""
 def test_get_demand_when_jobs_were_processed_should_return_demand(server_metrics_test_object_with_informations):
-    expected_demand = CUMULATIVE_TIME_IN_SERVER / NUMBER_OF_PROCESSED_JOBS
+    expected_demand = (CUMULATIVE_TIME_IN_SERVER - CUMULATIVE_QUEUE_TIMES) / NUMBER_OF_PROCESSED_JOBS
 
     assert server_metrics_test_object_with_informations.get_demand() == expected_demand
