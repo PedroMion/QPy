@@ -202,7 +202,5 @@ __marimo__/
 
 local-tests/
 
-setup.py
-
 # VSCode
 .vscode
