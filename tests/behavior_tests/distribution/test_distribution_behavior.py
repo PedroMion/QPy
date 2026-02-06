@@ -4,7 +4,7 @@ from qpy.distribution import Distribution
 DELTA_PERCENTAGE = 0.05 # 5% margin of error
 NUMBER_OF_EXECUTIONS = 100000
 CONSTANT_VALUE = 2
-LAMBDA_VALUE_EXPONENTIAL = 2
+MEAN_TIME_BETWEEN_EVENTS_EXPONENTIAL = 2
 LOWER_BOUND_UNIFORM = 0
 UPPER_BOUND_UNIFORM = 4
 MU_NORMAL = 10
@@ -27,14 +27,14 @@ def test_constant_distribution_samples():
     assert sample_sum // NUMBER_OF_EXECUTIONS == CONSTANT_VALUE
 
 def test_exponential_distribution_samples():
-    distribution = Distribution.exponential(lambda_value=LAMBDA_VALUE_EXPONENTIAL)
+    distribution = Distribution.exponential(mean_time_between_events=MEAN_TIME_BETWEEN_EVENTS_EXPONENTIAL)
 
     sample_sum = 0
 
     for _ in range(NUMBER_OF_EXECUTIONS):
         sample_sum += distribution.sample()
     
-    assert value_within_range(LAMBDA_VALUE_EXPONENTIAL, sample_sum / NUMBER_OF_EXECUTIONS, DELTA_PERCENTAGE)
+    assert value_within_range(MEAN_TIME_BETWEEN_EVENTS_EXPONENTIAL, sample_sum / NUMBER_OF_EXECUTIONS, DELTA_PERCENTAGE)
 
 def test_uniform_distribution_samples():
     distribution = Distribution.uniform(LOWER_BOUND_UNIFORM, UPPER_BOUND_UNIFORM)

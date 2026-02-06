@@ -18,11 +18,11 @@ class ConstantDistribution(IDistribution):
         return max(round(self._value, 4), 0.0001)
 
 class ExponentialDistribution(IDistribution):
-    def __init__(self, lambda_value: float):
-        self._lambda_value = lambda_value
+    def __init__(self, mean_time_between_events: float):
+        self._mean_time_between_events = mean_time_between_events
     
     def sample(self) -> float:
-        return max(round(-np.log(1 - random.random()) * self._lambda_value, 4), 0.0001)
+        return max(round(-np.log(1 - random.random()) * self._mean_time_between_events, 4), 0.0001)
 
 class UniformDistribution(IDistribution):
     def __init__(self, lower_bound: float, upper_bound: float):
@@ -64,19 +64,19 @@ class Distribution():
     
     @staticmethod
     @validate_call
-    def exponential(lambda_value: float) -> ExponentialDistribution:
+    def exponential(mean_time_between_events: float) -> ExponentialDistribution:
         """
         Returns a distribution of type exponential.
 
         Parameters
         ----------
-        lambda_value : float - Required
-            The rate parameter (lambda) of the exponential distribution.
+        mean_time_between_events : float - Required
+            The expected time between consecutive events. This parameter represents the mean of an exponential distribution and corresponds to the inverse of the rate parameter (λ) of the associated Poisson process.
         """
-        if lambda_value < 0:
+        if mean_time_between_events < 0:
             raise ValueError('Negative values for distribution parameters are not allowed')
                 
-        return ExponentialDistribution(lambda_value)
+        return ExponentialDistribution(mean_time_between_events)
 
     @staticmethod
     @validate_call

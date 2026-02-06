@@ -4,7 +4,7 @@ from qpy import Distribution
 def get_distribution(distributionProperties):
     match distributionProperties.distribution:
         case 'exponential':
-            return Distribution.exponential(lambda_value=distributionProperties.params['lambda'])
+            return Distribution.exponential(mean_time_between_events=distributionProperties.params['meanTime'])
         case 'constant':
             return Distribution.constant(value=distributionProperties.params['constantValue'])
         case 'uniform':

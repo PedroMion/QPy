@@ -34,27 +34,27 @@ def test_constant_distribution_generation_when_value_is_valid_should_return_prop
 
 """
 Particionamento do espaço de entrada para função exponential() da classe Distribution utilizando Each Choice Coverage:
-    lambda_value: 0 | < 0 | > 0
+    mean_time_between_events: 0 | < 0 | > 0
 """
 
-"""lambda_value < 0 (Inválido)"""
-def test_exponential_distribution_generation_when_lambda_value_is_negative_should_raise_exception():
+"""mean_time_between_events < 0 (Inválido)"""
+def test_exponential_distribution_generation_when_mean_time_between_events_is_negative_should_raise_exception():
     with pytest.raises(ValueError):
         Distribution.exponential(NEGATIVE_VALUE)
 
-"""lambda_value = 0 (Válido)"""
-def test_exponential_distribution_generation_when_lambda_value_is_zero_should_return_proper_object():
+"""mean_time_between_events = 0 (Válido)"""
+def test_exponential_distribution_generation_when_mean_time_between_events_is_zero_should_return_proper_object():
     distribution = Distribution.exponential(ZERO_VALUE)
 
     assert isinstance(distribution, ExponentialDistribution)
-    assert distribution._lambda_value == ZERO_VALUE
+    assert distribution._mean_time_between_events == ZERO_VALUE
 
-"""lambda_value > 0 (Válido)"""
-def test_exponential_distribution_generation_when_lambda_value_is_valid_should_return_proper_object():
+"""mean_time_between_events > 0 (Válido)"""
+def test_exponential_distribution_generation_when_mean_time_between_events_is_valid_should_return_proper_object():
     distribution = Distribution.exponential(POSITIVE_VALUE)
 
     assert isinstance(distribution, ExponentialDistribution)
-    assert distribution._lambda_value == POSITIVE_VALUE
+    assert distribution._mean_time_between_events == POSITIVE_VALUE
 
 
 """

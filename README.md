@@ -45,7 +45,7 @@ Com o ambiente pronto, servidores podem ser adicionados. O método `add_server` 
 A disciplina segue o mesmo padrão factory da classe `QueueDiscipline`. O método retorna o ID do servidor, que será utilizado em outras configurações do ambiente.
 
 ```python
-a = env.add_server(service_distribution=Distribution.constant(lambda_value=(2)), queue_discipline=QueueDiscipline.fcfs())
+a = env.add_server(service_distribution=Distribution.constant(value=(2)), queue_discipline=QueueDiscipline.fcfs())
 ```
 
 Para conectar dois servidores, utilize `add_servers_connection`, informando o ID do servidor de origem, o de destino e a probabilidade de roteamento.
@@ -116,7 +116,7 @@ It provides ready-to-use methods that instantiate and return distribution object
 All distributions share a common abstract interface, allowing for generic use throughout the system.
 
 ```python
-a = env.add_server(service_distribution=Distribution.constant(lambda_value=(2)), queue_discipline=QueueDiscipline.fcfs())
+a = env.add_server(service_distribution=Distribution.constant(value=(2)), queue_discipline=QueueDiscipline.fcfs())
 ```
 
 Once the environment is ready, servers can be added using the `add_server` method.
@@ -125,7 +125,7 @@ Queue disciplines follow the same factory approach, implemented by the `QueueDis
 The method returns the server ID, which can be used for further configuration.
 
 ```python
-a = env.add_server(service_distribution=Distribution.constant(lambda_value=2), queue_discipline=QueueDiscipline.fcfs())
+a = env.add_server(service_distribution=Distribution.constant(value=2), queue_discipline=QueueDiscipline.fcfs())
 ```
 
 To connect two servers, use `add_servers_connection`, passing the origin server ID, the destination server ID, and the routing probability.
