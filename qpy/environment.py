@@ -10,7 +10,7 @@ from pydantic import validate_call
 
 class Environment():
     @validate_call(config=dict(arbitrary_types_allowed=True))
-    def __init__(self, number_of_terminals: Optional[int] = None, think_time_distribution: Optional[IDistribution] = None, time_unit: str = 'seconds'):
+    def __init__(self, number_of_terminals: Optional[int] = None, think_time_distribution: Optional[IDistribution] = None, time_unit: Optional[str] = 'seconds'):
         """
         Initializes the Environment object. Determines if the network is open or closed based on the input.
 
